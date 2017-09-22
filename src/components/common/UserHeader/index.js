@@ -1,6 +1,9 @@
 import React , { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Login from './Login';
 import { Menu, Dropdown, Icon, Modal, Tabs} from 'antd';
+import Register from './Register';
+
 const TabPane = Tabs.TabPane;
 
 class UserHeader extends Component {
@@ -45,24 +48,41 @@ class UserHeader extends Component {
   }
   // 验证是否登录
   chekLogin = () => {
-    fetch('/users/cheklogin',{
+    fetch('/api/users/cheklogin',{
       method: 'GET',
       credentials: "include"
     }).then(res => res.json()).then(data => {
-      this.loginSuccess(data.result);
+      if (data.status === 200) {
+        this.loginSuccess(data.result);
+      }
+    })
+  }
+  // 登出
+  logOut = () => {
+    fetch('/api/users/logout',{
+      method: 'GET',
+      credentials: "include"
+    }).then(res => res.json()).then(data => {
+      if (data.status === 200) {
+        this.setState({
+          nickName: '',
+          isLogin: false,
+          userId: ''
+        });
+      }
     })
   }
   render () {
     const menu = (
       <Menu>
         <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">1st menu item</a>
+          <Link to={'/user/detail/' + this.state.userId }>个人中心</Link>
         </Menu.Item>
         <Menu.Item>
           <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
         </Menu.Item>
         <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">3d menu item</a>
+          <a rel="noopener noreferrer" onClick={this.logOut}>退出</a>
         </Menu.Item>
       </Menu>
     );
@@ -85,7 +105,9 @@ class UserHeader extends Component {
           <TabPane tab="登录" key="1">
             <Login success={this.loginSuccess.bind(this)}/>
           </TabPane>
-          <TabPane tab="注册" key="2">注册</TabPane>
+          <TabPane tab="注册" key="2">
+            <Register success={this.loginSuccess.bind(this)}/>
+          </TabPane>
         </Tabs>
         </Modal>
     </div>;

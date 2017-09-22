@@ -2,3 +2,8 @@
     width: 1200px;
     margin: 0 auto;
 }
+
+/* userList */
+.userList .public {
+    padding: 1rem 0;
+}

@@ -18,10 +18,7 @@
     "eject": "react-scripts eject"
   },
   "proxy": {
-    "/goods": {
-      "target": "http://localhost:3000"
-    },
-    "/users": {
+    "/api/*": {
       "target": "http://localhost:3000"
     }
   }

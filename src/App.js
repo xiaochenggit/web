@@ -6,6 +6,8 @@ import Index from './components/Index';
 import List from './components/List';
 import FooterHTML from './components/common/Footer';
 import Header from './components/common/Header';
+import UserDetail from './components/UserDetail';
+import UserList from './components/UserList';
 class App extends Component {
   render() {
     return (
@@ -15,6 +17,8 @@ class App extends Component {
             <Header/>
             <Route exact path="/" component={Index}/>
             <Route exact path="/list" component={List}/>
+            <Route exact path="/user/detail/:userId" component={UserDetail} />
+            <Route exact path="/user/list" component={UserList}/>
             <FooterHTML />
           </div>
         </Router>

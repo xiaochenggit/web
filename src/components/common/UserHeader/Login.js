@@ -1,6 +1,6 @@
 import React , { Component } from 'react';
-import $ from 'jquery';
 import { Form, Icon, Input, Button, Checkbox,message } from 'antd';
+import $ from 'jquery';
 const FormItem = Form.Item;
 
 class Login extends Component {
@@ -9,15 +9,17 @@ class Login extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        fetch('/users/login',{
-          method: 'POST',
-          body: values
-        }).then(res => res.json()).then(data => {
-          if (data.status === 200) {
-            message.success(data.msg)
-            this.props.success(data.result)
-          } else {
-            message.error(data.msg)
+        $.ajax({
+          type: 'POST',
+          url: '/api/users/login', 
+          data: values,
+          success: (data) => {
+            if (data.status === 200) {
+              message.success(data.msg)
+              this.props.success(data.result)
+            } else {
+              message.error(data.msg)
+            }
           }
         })
       }
