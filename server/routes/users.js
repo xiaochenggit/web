@@ -33,7 +33,8 @@ router.post('/login', (req, res, next) => {
             msg: '登录成功!',
             result: {
               userName: user.userName,
-              _id: user._id
+              _id: user._id,
+              role: user.role
             }
           })
         })
@@ -60,7 +61,8 @@ router.get('/cheklogin', (req, res, next) => {
             msg: '已登录!',
             result: {
               userName: user.userName,
-              _id: user._id
+              _id: user._id,
+              role: user.role
             }
           })
         })
@@ -126,7 +128,8 @@ router.post('/register', (req, res, next) => {
               msg: '注册成功!',
               result: {
                 userName: user.userName,
-                _id: user._id
+                _id: user._id,
+                role: user.role
               }
             })
           }
@@ -167,10 +170,9 @@ router.post('/detail', (req, res, next) => {
 
 
 // 用户列表
-
 router.get('/list', (req, res, next) => {
   let user = req.session.user;
-  if (user && user.role == 0) {
+  if (user && user.role > 0) {
     User.find({}, (err, users) => {
       if (err) {
         res.json({
@@ -192,4 +194,31 @@ router.get('/list', (req, res, next) => {
     })
   }
 })
+
+// 删除用户
+router.post('/delete', (req, res, next) => {
+  let cookieUser = req.session.user;
+  let _id = req.body.id;
+  console.log(_id);
+  if (cookieUser && cookieUser.role > 0) {
+    User.remove({_id}, (err) => {
+      if (err) {
+        res.json({
+          status: 401,
+          msg: '删除用户出错!'
+        })
+      } else {
+        res.json({
+          status: 200,
+          msg: '删除用户成功!'
+        })
+      }
+    })
+  } else {
+    res.json({
+      status: 201,
+      msg: '没有权限删除此用户!'
+    });
+  }
+});
 module.exports = router;

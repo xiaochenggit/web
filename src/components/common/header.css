@@ -34,14 +34,15 @@
 .user-header .login:hover{
     color: #f60;
 }
-.ant-menu-horizontal {
+.user-header .ant-menu-horizontal {
     border-bottom: none;
 }
-.ant-btn-primary {
+.login-form .ant-btn-primary,
+.login-register .ant-btn-primary {
     display: block;
     width: 100%;
 }
-.login-form-forgot {
+.login-form .login-form-forgot {
     float: right;
 }
 .ant-row.ant-form-item {

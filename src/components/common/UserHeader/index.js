@@ -16,8 +16,7 @@ class UserHeader extends Component {
     * {Boolean} visible 登录注册弹窗是否显示
     */
    this.state = {
-     nickName: '',
-     userId: '',
+     user: '',
      isLogin: false,
      visible: false
    }
@@ -38,9 +37,8 @@ class UserHeader extends Component {
   loginSuccess(user) {
     this.handleCancel();
     this.setState({
-      nickName: user.userName,
       isLogin: true,
-      userId: user._id
+      user
     });
   }
   componentDidMount() {
@@ -65,9 +63,8 @@ class UserHeader extends Component {
     }).then(res => res.json()).then(data => {
       if (data.status === 200) {
         this.setState({
-          nickName: '',
           isLogin: false,
-          userId: ''
+          user: ''
         });
       }
     })
@@ -76,11 +73,11 @@ class UserHeader extends Component {
     const menu = (
       <Menu>
         <Menu.Item>
-          <Link to={'/user/detail/' + this.state.userId }>个人中心</Link>
+          <Link to={'/user/detail/' + this.state.user._id }>个人中心</Link>
         </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
-        </Menu.Item>
+        {this.state.user.role > 0 ? <Menu.Item>
+          <Link to={'/user/list'}>用户列表</Link>
+        </Menu.Item> : ''}
         <Menu.Item>
           <a rel="noopener noreferrer" onClick={this.logOut}>退出</a>
         </Menu.Item>
@@ -89,7 +86,7 @@ class UserHeader extends Component {
     let html = this.state.isLogin ?
     <Dropdown overlay={menu}>
       <a className="ant-dropdown-link">
-        {this.state.nickName}<Icon type="down" />
+        {this.state.user.userName}<Icon type="down" />
       </a>
     </Dropdown>
     :
@@ -101,7 +98,7 @@ class UserHeader extends Component {
           footer={null}
           width={400}
         >
-        <Tabs defaultActiveKey="1" size="small" animated={false}>
+        <Tabs defaultActiveKey="1" size="small" animated={false} class='usetTabs'>
           <TabPane tab="登录" key="1">
             <Login success={this.loginSuccess.bind(this)}/>
           </TabPane>

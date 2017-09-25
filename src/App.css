@@ -7,3 +7,9 @@
 .userList .public {
     padding: 1rem 0;
 }
+.userList .ant-table-thead > tr > th{
+    text-align: center
+}
+.userList .ant-table-tbody > tr > td {
+    text-align: center
+}
