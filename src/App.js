@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import './App.css';
 import 'antd/dist/antd.css';
+import './App.css';
+import './iconfont.css';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Index from './components/Index';
-import List from './components/List';
+import Index from './components/view/Index/';
+import List from './components/view/List/';
 import FooterHTML from './components/common/Footer';
 import Header from './components/common/Header';
-import UserDetail from './components/UserDetail';
-import UserList from './components/UserList';
+import UserDetail from './components/view/UserDetail/';
+import UserList from './components/view/UserList/';
 class App extends Component {
   render() {
     return (

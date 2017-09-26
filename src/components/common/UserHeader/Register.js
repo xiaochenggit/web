@@ -1,9 +1,10 @@
 import React , { Component } from 'react';
-import { Form, Input, Tooltip, Icon, Select, Button, message } from 'antd';
+import { Form, Input, Tooltip, Icon, Select, Button, message, Radio } from 'antd';
 import $ from 'jquery';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
 
 class Register extends Component {
   state = {
@@ -132,6 +133,21 @@ class Register extends Component {
             }],
           })(
             <Input type="password" onBlur={this.handleConfirmBlur} />
+          )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="性别"
+        >
+          {getFieldDecorator('sex', {
+            rules: [{
+              required: true, message: 'Please  your sex!',
+            }]
+          })(
+            <RadioGroup>
+              <Radio value="nan">男</Radio>
+              <Radio value="nv">女</Radio>
+            </RadioGroup>
           )}
         </FormItem>
         <FormItem

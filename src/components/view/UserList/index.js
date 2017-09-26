@@ -1,7 +1,7 @@
 import React , { Component } from 'react';
 import { Table, Icon, Modal, message} from 'antd';
-import {Link} from 'react-router-dom';
-import '../js/dateformat';
+import { Link } from 'react-router-dom';
+import '../../../js/dateformat';
 import $ from 'jquery';
 
 const confirm = Modal.confirm;

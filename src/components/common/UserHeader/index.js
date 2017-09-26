@@ -1,7 +1,7 @@
 import React , { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Login from './Login';
-import { Menu, Dropdown, Icon, Modal, Tabs} from 'antd';
+import { Menu, Dropdown, Icon, Modal, Tabs, Avatar} from 'antd';
 import Register from './Register';
 
 const TabPane = Tabs.TabPane;
@@ -86,6 +86,7 @@ class UserHeader extends Component {
     let html = this.state.isLogin ?
     <Dropdown overlay={menu}>
       <a className="ant-dropdown-link">
+      <Avatar src={require('../../../images/user.png')} />
         {this.state.user.userName}<Icon type="down" />
       </a>
     </Dropdown>

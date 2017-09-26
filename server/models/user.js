@@ -25,6 +25,10 @@ let userSchema = new Schema({
     "createTime": {
         type: Number,
         default: new Date().getTime()
+    },
+    "sex": {
+        type: String,
+        default: 'nan'
     }
 });
 
