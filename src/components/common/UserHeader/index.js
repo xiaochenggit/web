@@ -1,4 +1,5 @@
 import React , { Component } from 'react';
+import PubSub from 'pubsub-js';
 import { Link } from 'react-router-dom';
 import Login from './Login';
 import { Menu, Dropdown, Icon, Modal, Tabs, Avatar} from 'antd';
@@ -40,9 +41,14 @@ class UserHeader extends Component {
       isLogin: true,
       user
     });
+    PubSub.publish('getUser', user);
   }
   componentDidMount() {
-    this.chekLogin()
+    this.chekLogin();
+    // 监控其他组件模拟登录的信息!
+    PubSub.subscribe('userLogin', () => {
+      this.showModal();
+    })
   }
   // 验证是否登录
   chekLogin = () => {
@@ -52,6 +58,8 @@ class UserHeader extends Component {
     }).then(res => res.json()).then(data => {
       if (data.status === 200) {
         this.loginSuccess(data.result);
+      } else {
+        PubSub.publish('getUser', {});
       }
     })
   }
@@ -66,8 +74,12 @@ class UserHeader extends Component {
           isLogin: false,
           user: ''
         });
+        PubSub.publish('getUser', {});
       }
     })
+  }
+  componentWillUnmount () {
+    PubSub.unsubscribe('userLogin');
   }
   render () {
     const menu = (

@@ -12,7 +12,7 @@ var mongoose = require('mongoose');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-
+var userComment = require('./routes/userComment');
 var app = express();
 
 // view engine setup
@@ -55,7 +55,7 @@ app.use(session({
 
 app.use('/', index);
 app.use('/api/users', users);
-
+app.use('/api/usercomment', userComment);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
