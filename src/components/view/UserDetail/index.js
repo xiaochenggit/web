@@ -34,7 +34,7 @@ class UserDetail extends Component {
       })
     });
   }
-  componentDidMount () {
+  componentWillMount () {
     this.getDetail(this.state.lookUserId);
     this.getUserComments(this.state.lookUserId)
     // 监控 用户的登录状态!
@@ -138,7 +138,12 @@ class UserDetail extends Component {
           </div>
           <div className='userCommentAch'>
             <div className='userComments shadowBox'>
-              <Card title="留言板" bordered={false} style={{ width: '100%' }}>
+              <Card 
+                title="留言板" 
+                bordered={false} 
+                style={{ width: '100%' }}
+                extra={<span><span className='iconfont icon-time'></span>{this.state.userCommentsList.length + '条'}</span>}
+              >
                 <CommentList 
                   commentList={this.state.userCommentsList} 
                   lookUserId={this.state.lookUserId} 

@@ -1,13 +1,30 @@
 import React , { Component } from 'react';
 import {Link} from 'react-router-dom';
 import $ from 'jquery';
-import { Card, Modal, message } from 'antd';
+import { Card, Modal, message, Pagination } from 'antd';
 require('moment/locale/zh-cn');
 
 let moment = require('moment');
 const confirm = Modal.confirm;
 
 class CommentList extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      commentListArray: [],
+      pageSize: 10,
+      defaultCurrent: 1,
+      current: 1
+    }
+  }
+  componentWillReceiveProps (nextProps) {
+    let commentList = nextProps.commentList;
+    let commentListArray = commentList.slice((this.state.defaultCurrent - 1) * this.state.pageSize,
+     this.state.defaultCurrent * this.state.pageSize);
+    this.setState({
+      commentListArray
+    })
+  }
   // 确认删除
   showConfirm = (id) => {
     let that = this;
@@ -17,6 +34,15 @@ class CommentList extends Component {
         that.deleteUserComment(id);
       }
     });
+  }
+  // 页码改变回调
+  changePage = (page, pageSize) => {
+    let commentList = this.props.commentList;
+    let commentListArray = commentList.slice((page - 1) * pageSize, page * pageSize);
+    this.setState({
+      commentListArray,
+      current: page
+    })
   }
   // 删除留言
   deleteUserComment = (id) => {
@@ -39,9 +65,9 @@ class CommentList extends Component {
   render () {
     let lookUserId = this.props.lookUserId;
     let user = this.props.user;
-    let commentList = this.props.commentList;
-    let html = commentList.length > 0 ? 
-    commentList.map((item, index) => 
+    let commentListArray = this.state.commentListArray;
+    let html = commentListArray.length > 0 ? 
+    commentListArray.map((item, index) => 
     <Card 
       title={<Link to={'/user/detail/' + item.from._id}>{item.from.userName}</Link>} 
       extra={moment((item.createTime)).fromNow()} bordered={true} key={index}>
@@ -61,6 +87,15 @@ class CommentList extends Component {
     return (
       <div className='userCommentList'>
         {html}
+        {/* 有第二页时候才会显示分页信息, 大于5页时候，才有跳页操作 */}
+        {this.props.commentList.length > this.state.pageSize ? <Pagination 
+          pageSize={this.state.pageSize}
+          defaultCurrent={this.state.defaultCurrent} 
+          total={this.props.commentList.length}
+          onChange={this.changePage}
+          current={this.state.current}
+          showQuickJumper={this.props.commentList.length / this.state.pageSize > 5} 
+        /> : ''}
       </div>
     )
   }  

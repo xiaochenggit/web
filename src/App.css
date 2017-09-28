@@ -96,6 +96,9 @@ a:hover {
 .userdetail .ant-card-body{
     padding: 1rem;
 }
+.userdetail .userComments .ant-card-extra .iconfont{
+    margin: 0 0.4rem;
+}
 .userdetail .userCommentList {
     margin-bottom: 1rem;
 }
@@ -127,6 +130,9 @@ a:hover {
 .userdetail .userCommentList .ant-card-body .operation .iconfont:hover{
     display: inline-block;
     transform: scale(1.2,1.2);
+}
+.userdetail .userCommentList .ant-pagination {
+    text-align: center;
 }
 /* userList */
 .userList .public,
