@@ -21,30 +21,40 @@ class UserDetail extends Component {
       isSelf: false,
       userCommentsList: []
     }
-  }
+  } 
   componentWillReceiveProps(nextProps) {
     this.getDetail(nextProps.match.params.userId);
     this.getUserComments(nextProps.match.params.userId)
     this.setState({
       lookUserId: nextProps.match.params.userId
     });
-  }
-  componentDidMount () {
-    this.getDetail(this.state.lookUserId);
-    this.getUserComments(this.state.lookUserId)
-    // 监控 用户的登录状态!
     PubSub.subscribe("getUser", ( msg, user ) => {
       this.setState({
         user
       })
     });
   }
-  // 传递用户的登录信息!
+  componentDidMount () {
+    this.getDetail(this.state.lookUserId);
+    this.getUserComments(this.state.lookUserId)
+    // 监控 用户的登录状态!
+    PubSub.subscribe("changeUser", ( msg, user ) => {
+      this.setState({
+        user
+      })
+    });
+    PubSub.publish('getUser');
+    this.timer = setInterval(()=> {
+      this.getUserComments(this.state.lookUserId)
+    }, 60000)
+  }
+  // 登录
   Login = () => {
     PubSub.publish('userLogin');
   }
   componentWillNnmount () {
-    PubSub.unsubscribe('getUser');
+    PubSub.unsubscribe('changeUser');
+    this.timer && clearInterval(this.timer);
   }
   // 获得用户信息
   getDetail = (lookUserId) => {
@@ -83,6 +93,19 @@ class UserDetail extends Component {
       }
     })
   }
+  // 删除留言!
+  deleteUserComment = (id) => {
+    let userCommentsList = this.state.userCommentsList;
+    userCommentsList.forEach((item, index) => {
+      if (item._id === id) {
+        userCommentsList.splice(index, 1)
+        return;
+      }
+    });
+    this.setState({
+      userCommentsList
+    })
+  }
   render () {
     return (
       <div className='userdetail'>
@@ -116,7 +139,12 @@ class UserDetail extends Component {
           <div className='userCommentAch'>
             <div className='userComments shadowBox'>
               <Card title="留言板" bordered={false} style={{ width: '100%' }}>
-                <CommentList commentList={this.state.userCommentsList} />
+                <CommentList 
+                  commentList={this.state.userCommentsList} 
+                  lookUserId={this.state.lookUserId} 
+                  user={this.state.user} 
+                  deleteUserComment={this.deleteUserComment}
+                />
                 {this.state.user.userName ? <CommentForm lookUserId={this.state.lookUserId} 
                 success={() => this.getUserComments(this.state.lookUserId)}/> : <Button type="primary" onClick={this.Login}>请先登录</Button>}
               </Card>

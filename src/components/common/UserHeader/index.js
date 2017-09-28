@@ -41,14 +41,17 @@ class UserHeader extends Component {
       isLogin: true,
       user
     });
-    PubSub.publish('getUser', user);
+    PubSub.publish('changeUser', user);
   }
   componentDidMount() {
     this.chekLogin();
     // 监控其他组件模拟登录的信息!
     PubSub.subscribe('userLogin', () => {
       this.showModal();
-    })
+    });
+    PubSub.subscribe('getUser', () => {
+      this.chekLogin();
+    });
   }
   // 验证是否登录
   chekLogin = () => {
@@ -59,7 +62,7 @@ class UserHeader extends Component {
       if (data.status === 200) {
         this.loginSuccess(data.result);
       } else {
-        PubSub.publish('getUser', {});
+        PubSub.publish('changeUser', {});
       }
     })
   }
@@ -74,12 +77,13 @@ class UserHeader extends Component {
           isLogin: false,
           user: ''
         });
-        PubSub.publish('getUser', {});
+        PubSub.publish('changeUser', {});
       }
     })
   }
   componentWillUnmount () {
     PubSub.unsubscribe('userLogin');
+    PubSub.unsubscribe('getUser');
   }
   render () {
     const menu = (

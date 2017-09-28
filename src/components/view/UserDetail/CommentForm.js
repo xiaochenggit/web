@@ -20,6 +20,9 @@ class CommentForm extends Component {
             if (data.status === 200) {
               message.success(data.msg);
               this.props.success();
+              // 清空表单
+              this.props.form.resetFields();
+              this.text.focus();
             } else {
               message.error(data.msg)
             }
@@ -37,7 +40,7 @@ class CommentForm extends Component {
             {getFieldDecorator('content', {
               rules: [{ required: true, message: '请填写留言内容!' }],
             })(
-              <TextArea rows={4} placeholder="请填写留言内容" />
+              <TextArea rows={4} placeholder="请填写留言内容" ref={(text) => this.text = text}/>
             )}
           </FormItem>
           <FormItem>
