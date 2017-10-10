@@ -14,6 +14,8 @@ class CommentForm extends Component {
           type: 'POST',
           data: {
             user: this.props.lookUserId,
+            cId: this.props.cId,
+            to: this.props.to,
             ...values
           },
           success: (data) => {
@@ -35,6 +37,10 @@ class CommentForm extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <div className='commentForm'>
+         {
+           this.props.toUser ? 
+           <Button type="primary to" ghost onClick={this.props.reductToComment}>回复: {this.props.toUser}</Button> 
+           : ''}
          <Form onSubmit={this.handleSubmit}>
           <FormItem>
             {getFieldDecorator('content', {

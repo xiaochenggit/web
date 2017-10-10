@@ -10,6 +10,12 @@ const confirm = Modal.confirm;
 class CommentList extends Component {
   constructor (props) {
     super(props);
+    /**
+     * {Array} commentListArray 当前留言数组
+     * {Number} pageSize 留言每页默认条目
+     * {Number} defaultCurrent 默认页码
+     * {Number} current 当前页码
+     */
     this.state = {
       commentListArray: [],
       pageSize: 10,
@@ -19,19 +25,19 @@ class CommentList extends Component {
   }
   componentWillReceiveProps (nextProps) {
     let commentList = nextProps.commentList;
-    let commentListArray = commentList.slice((this.state.defaultCurrent - 1) * this.state.pageSize,
-     this.state.defaultCurrent * this.state.pageSize);
+    let commentListArray = commentList.slice((this.state.current - 1) * this.state.pageSize,
+     this.state.current * this.state.pageSize);
     this.setState({
       commentListArray
     })
   }
   // 确认删除
-  showConfirm = (id) => {
+  showConfirm = (id, cId) => {
     let that = this;
     confirm({
       title: '你确定要删除该留言吗?',
       onOk() {
-        that.deleteUserComment(id);
+        that.deleteUserComment(id, cId);
       }
     });
   }
@@ -45,17 +51,19 @@ class CommentList extends Component {
     })
   }
   // 删除留言
-  deleteUserComment = (id) => {
+  deleteUserComment = (id, cId) => {
+    cId = cId || 0;
     $.ajax({
       url: '/api/usercomment/delete',
       type: 'POST',
       data: {
-        id
+        id,
+        cId
       },
       success: (data) => {
         if (data.status === 200) {
           message.success(data.msg);
-          this.props.deleteUserComment(id);
+          this.props.success();
         } else {
           message.error(data.msg);
         }
@@ -68,19 +76,64 @@ class CommentList extends Component {
     let commentListArray = this.state.commentListArray;
     let html = commentListArray.length > 0 ? 
     commentListArray.map((item, index) => 
+    // 主留言
     <Card 
       title={<Link to={'/user/detail/' + item.from._id}>{item.from.userName}</Link>} 
-      extra={moment((item.createTime)).fromNow()} bordered={true} key={index}>
-      <p>{item.content}</p>
-      <span className='operation'>
-        {<span className='iconfont icon-liuyan'></span>}
-        {/* 判断权限 */}
-        {
-          lookUserId === user._id || user._id === item.from._id || user.role > 0 ?
-          <span className='iconfont icon-shanchu' onClick={() => this.showConfirm(item._id)}></span>
-          : ''
-        }
-      </span>
+      extra={moment((item.createTime)).fromNow()} bordered={true} key={index}
+      className='listOne'
+      >
+      <div className='content'>
+        <p className='one'>{item.content}
+          <span className='operation'>
+            {
+              <span 
+                className='iconfont icon-liuyan' 
+                onClick={() => this.props.getToComment(item._id, item.from._id, item.from.userName)}>
+              </span>
+            }
+            {/* 判断权限 */}
+            {
+              lookUserId === user._id || user._id === item.from._id || user.role > 0 ?
+              <span className='iconfont icon-shanchu' onClick={() => this.showConfirm(item._id)}></span>
+              : ''
+            }
+          </span>
+        </p>
+      </div>
+      {/* 回复 */}
+      {item.reply.map((cont, count) => 
+        <Card title={
+            <span>
+              <Link to={'/user/detail/' + cont.from._id}>{cont.from.userName}</Link>
+              &nbsp;回复:&nbsp;
+              <Link to={'/user/detail/' + cont.to._id}>{cont.to.userName}</Link>
+            </span>
+          }
+          extra={moment((cont.createTime)).fromNow()} bordered={true} key={count}
+          className='listTwo'
+          >
+          <div className='content'>
+            <p className='two'>{cont.content}
+            <span className='operation'>
+              {
+                <span 
+                  className='iconfont icon-liuyan' 
+                  onClick={() => this.props.getToComment(item._id, cont.from._id, cont.from.userName)}>
+                </span>
+              }
+              {/* 判断权限 */}
+              {
+                lookUserId === user._id || user._id === cont.from._id || user.role > 0 ?
+                <span className='iconfont icon-shanchu' 
+                  onClick={() => this.showConfirm(cont._id, item._id)}>
+                </span>
+                : ''
+              }
+            </span>
+            </p>
+          </div>
+        </Card>
+      )}
     </Card>
     )
     : '暂无评论';

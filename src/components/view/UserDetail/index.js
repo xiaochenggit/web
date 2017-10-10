@@ -13,25 +13,31 @@ class UserDetail extends Component {
      * {Oject} lookUser 被浏览用户信息
      * {Boolean} isSelf 是否是自己浏览自己
      * {Array} userCommentsList 留言板数组
+     * {Boolean} isSortTime 是否按照时间排序
+     * {Number} to 回复用户的id
+     * {Number} cId 回复主留言的 id
+     * {String} toUser 回复用户名字
      */
     this.state = {
       lookUserId: this.props.match.params.userId,
       lookUser: {},
       user: {},
       isSelf: false,
-      userCommentsList: []
+      userCommentsList: [],
+      isSortTime: true,
+      to: 0,
+      cId: 0,
+      toUser: ''
     }
   } 
   componentWillReceiveProps(nextProps) {
     this.getDetail(nextProps.match.params.userId);
     this.getUserComments(nextProps.match.params.userId)
     this.setState({
-      lookUserId: nextProps.match.params.userId
-    });
-    PubSub.subscribe("getUser", ( msg, user ) => {
-      this.setState({
-        user
-      })
+      lookUserId: nextProps.match.params.userId,
+      to: 0,
+      cId: 0,
+      toUser: ''
     });
   }
   componentWillMount () {
@@ -44,6 +50,7 @@ class UserDetail extends Component {
       })
     });
     PubSub.publish('getUser');
+    // 留言更新
     this.timer = setInterval(()=> {
       this.getUserComments(this.state.lookUserId)
     }, 60000)
@@ -52,7 +59,7 @@ class UserDetail extends Component {
   Login = () => {
     PubSub.publish('userLogin');
   }
-  componentWillNnmount () {
+  componentWillUnmount () {
     PubSub.unsubscribe('changeUser');
     this.timer && clearInterval(this.timer);
   }
@@ -76,6 +83,27 @@ class UserDetail extends Component {
       }
     })
   }
+  // 获得回复留言
+  getToComment = (cId, to, toUser) => {
+    this.setState({
+      cId,
+      to,
+      toUser
+    });
+    if (this.state.user._id) {
+      document.getElementById('content').focus();
+    } else {
+      this.Login();
+    }
+  }
+  // 初始化回复留言
+  reductToComment = () => {
+    this.setState({
+      cId: 0,
+      to: 0,
+      toUser: ''
+    })
+  }
   // 获得留言板信息
   getUserComments = (lookUserId) => {
     $.ajax({
@@ -87,7 +115,7 @@ class UserDetail extends Component {
       success: (data) => {
         if (data.status === 200) {
           this.setState({
-            userCommentsList: data.result
+            userCommentsList: this.state.isSortTime ? data.result.reverse() : data.result
           })
         }
       }
@@ -105,6 +133,13 @@ class UserDetail extends Component {
     this.setState({
       userCommentsList
     })
+  }
+  // 改变排序方式
+  changeSortTime = () => {
+    this.setState({
+      isSortTime: !this.state.isSortTime
+    })
+    this.getUserComments(this.state.lookUserId)
   }
   render () {
     return (
@@ -142,16 +177,27 @@ class UserDetail extends Component {
                 title="留言板" 
                 bordered={false} 
                 style={{ width: '100%' }}
-                extra={<span><span className='iconfont icon-time'></span>{this.state.userCommentsList.length + '条'}</span>}
+                extra={<span><span className={'icon-time iconfont' + (this.state.isSortTime ? ' on' : '')} onClick={this.changeSortTime}></span>{this.state.userCommentsList.length + '条'}</span>}
               >
                 <CommentList 
                   commentList={this.state.userCommentsList} 
                   lookUserId={this.state.lookUserId} 
                   user={this.state.user} 
                   deleteUserComment={this.deleteUserComment}
+                  getToComment={this.getToComment}
+                  success={() => this.getUserComments(this.state.lookUserId)}
                 />
-                {this.state.user.userName ? <CommentForm lookUserId={this.state.lookUserId} 
-                success={() => this.getUserComments(this.state.lookUserId)}/> : <Button type="primary" onClick={this.Login}>请先登录</Button>}
+                {
+                  this.state.user.userName ? 
+                  <CommentForm 
+                  lookUserId={this.state.lookUserId}
+                  cId={this.state.cId}
+                  to={this.state.to}
+                  toUser={this.state.toUser} 
+                  reductToComment={this.reductToComment}
+                  success={() => this.getUserComments(this.state.lookUserId)}
+                  /> 
+                    : <Button type="primary" onClick={this.Login}>请先登录</Button>}
               </Card>
             </div>
             <div className='userAch shadowBox'>

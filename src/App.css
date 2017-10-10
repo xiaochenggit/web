@@ -98,6 +98,10 @@ a:hover {
 }
 .userdetail .userComments .ant-card-extra .iconfont{
     margin: 0 0.4rem;
+    cursor: pointer;
+}
+.userdetail .userComments .ant-card-extra .iconfont.on {
+    color: red;
 }
 .userdetail .userCommentList {
     margin-bottom: 1rem;
@@ -108,16 +112,21 @@ a:hover {
 .userdetail .userCommentList .ant-card:not(.ant-card-no-hovering):hover {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 }
-.userdetail .userCommentList .ant-card-body{
+.userdetail .userCommentList .ant-card-body .content p{
     position: relative;
 }
-.userdetail .userCommentList .ant-card-body .operation{
+.userdetail .userCommentList .ant-card-body .content p.one{
+    margin-bottom: 1rem;
+}
+.userdetail .userCommentList .ant-card.listOne .operation,
+.userdetail .userCommentList .ant-card.listTwo .operation{
     position: absolute;
-    right: 1rem;
-    bottom: 1rem;
+    right: 0rem;
+    bottom: 0rem;
     display: none;
 }
-.userdetail .userCommentList .ant-card:hover .operation{
+.userdetail .userCommentList .ant-card.listOne:hover .one>.operation,
+.userdetail .userCommentList .ant-card.listTwo:hover .two>.operation{
     display: block;
 }
 .userdetail .userCommentList .ant-card-body .operation .iconfont {
@@ -133,6 +142,9 @@ a:hover {
 }
 .userdetail .userCommentList .ant-pagination {
     text-align: center;
+}
+.userdetail .commentForm .to{
+    margin-bottom: 1rem;
 }
 /* userList */
 .userList .public,
