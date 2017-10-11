@@ -1,6 +1,7 @@
 import React , { Component } from 'react';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
+import FollowsCares from './FollowsCares';
 import { Button, Card  } from 'antd';
 import $ from 'jquery';
 import PubSub from 'pubsub-js';
@@ -27,12 +28,15 @@ class UserDetail extends Component {
       isSortTime: true,
       to: 0,
       cId: 0,
-      toUser: ''
+      toUser: '',
+      follows: [],
+      cares: []
     }
   } 
   componentWillReceiveProps(nextProps) {
     this.getDetail(nextProps.match.params.userId);
-    this.getUserComments(nextProps.match.params.userId)
+    this.getUserComments(nextProps.match.params.userId);
+    this.getCare(nextProps.match.params.userId);
     this.setState({
       lookUserId: nextProps.match.params.userId,
       to: 0,
@@ -42,6 +46,7 @@ class UserDetail extends Component {
   }
   componentWillMount () {
     this.getDetail(this.state.lookUserId);
+    this.getCare(this.state.lookUserId);
     this.getUserComments(this.state.lookUserId)
     // 监控 用户的登录状态!
     PubSub.subscribe("changeUser", ( msg, user ) => {
@@ -59,9 +64,34 @@ class UserDetail extends Component {
   Login = () => {
     PubSub.publish('userLogin');
   }
-  componentWillUnmount () {
-    PubSub.unsubscribe('changeUser');
-    this.timer && clearInterval(this.timer);
+  // 获得关注(被关注)信息.
+  getCare = (lookUserId) => {
+    $.ajax({
+      type: 'POST',
+      url: '/api/users/getcare',
+      data: {
+        _id: lookUserId
+      },
+      success: (data) => {
+        if (data.status === 200) {
+          this.setState({
+            follows: data.result.follows,
+            cares: data.result.cares
+          })
+        }
+      }
+    })
+  }
+  // 关注者中是否包含 该用户!
+  getIsCare = (follows, userId) => {
+    let isCare = false;
+    follows.forEach((item) => {
+      if (item.user._id === userId) {
+        isCare = true;
+        return false;
+      }
+    });
+    return isCare;
   }
   // 获得用户信息
   getDetail = (lookUserId) => {
@@ -141,6 +171,29 @@ class UserDetail extends Component {
     })
     this.getUserComments(this.state.lookUserId)
   }
+  // 添加关注
+  care = (_id, t) => {
+    if (!this.state.user._id) {
+      return this.Login();
+    }
+    $.ajax({
+      type: 'POST',
+      url: '/api/users/care',
+      data: {
+        type: t,
+        _id
+      },
+      success: (data) => {
+        if (data.status === 200) {
+          this.getCare(this.state.lookUserId);
+        }
+      }
+    })
+  }
+  componentWillUnmount () {
+    PubSub.unsubscribe('changeUser');
+    this.timer && clearInterval(this.timer);
+  }
   render () {
     return (
       <div className='userdetail'>
@@ -166,7 +219,14 @@ class UserDetail extends Component {
                   <div className='item'>
                     <span className='iconfont icon-phone'></span>{this.state.lookUser.phone} 
                   </div>
-                  {this.state.isSelf ? <Button type="dashed" className='changeUserInfo'>修改信息</Button> : ''}
+                  <div className='btnGroup'>
+                    {
+                      this.state.lookUserId === this.state.user._id ? 
+                      <Button type="dashed" className='changeUserInfo'>修改信息</Button> : 
+                      this.getIsCare(this.state.follows, this.state.user._id) ? 
+                      <Button type="dashed" onClick={()=>this.care(this.state.lookUser._id, 'cancel')}>已关注</Button> : 
+                      <Button type="primary" onClick={()=>this.care(this.state.lookUser._id, 'add')}>关注他</Button> }
+                  </div>
                 </div>
               </div>
             </div>
@@ -202,9 +262,7 @@ class UserDetail extends Component {
             </div>
             <div className='userAch shadowBox'>
               <Card title="个人成就" bordered={false} style={{ width: '100%' }}>
-                <p>Card content</p>
-                <p>Card content</p>
-                <p>Card content</p>
+                <FollowsCares cares={this.state.cares} follows={this.state.follows}/>
               </Card>
             </div>
           </div>

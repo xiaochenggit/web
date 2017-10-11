@@ -199,7 +199,6 @@ router.get('/list', (req, res, next) => {
 router.post('/delete', (req, res, next) => {
   let cookieUser = req.session.user;
   let _id = req.body.id;
-  console.log(_id);
   if (cookieUser && cookieUser.role > 0) {
     User.remove({_id}, (err) => {
       if (err) {
@@ -221,4 +220,121 @@ router.post('/delete', (req, res, next) => {
     });
   }
 });
+
+// 用户关注和取消
+router.post('/care', (req, res, next) => {
+  let cookieUser = req.session.user;
+  let _id = req.body._id;
+  let type = req.body.type;
+  if (cookieUser) {
+    User.findOne({_id}, (err, user) => {
+      if (err) {
+        res.json({
+          status: 401,
+          msg: err.message
+        })
+      } else {
+        if (user) {
+          if (type == 'add') {
+            user.follows.forEach((item, index) => {
+              if (item.user == cookieUser._id) {
+                user.follows.splice(index, 1);
+                return;
+              }
+            })
+            user.follows.push({
+              user: cookieUser._id,
+              time: new Date().getTime()
+            });
+            user.save(()=> {
+              User.findOne({_id: cookieUser._id},(err, user) => {
+                user.cares.forEach((item, index) => {
+                  if (item.user == _id) {
+                    user.cares.splice(index, 1);
+                    return;
+                  }
+                })
+                user.cares.push({
+                  user: _id,
+                  time: new Date().getTime()
+                })
+                user.save(()=> {
+                  res.json({
+                    status: 200,
+                    msg: '添加关注成功!'
+                  })
+                })
+              })
+            })
+          } else if (type == 'cancel') {
+            user.follows.forEach((item, index) => {
+              if (item.user == cookieUser._id) {
+                user.follows.splice(index, 1);
+                return;
+              }
+            })
+            user.save(()=> {
+              User.findOne({_id: cookieUser._id},(err, user) => {
+                user.cares.forEach((item, index) => {
+                  if (item.user == _id) {
+                    user.cares.splice(index, 1);
+                    return;
+                  }
+                })
+                user.save(()=> {
+                  res.json({
+                    status: 200,
+                    msg: '取消关注成功!'
+                  })
+                })
+              })
+            })
+          }
+        } else {
+          res.json({
+            status: 201,
+            msg: '用户不存在!'
+          })
+        }
+      }
+    })
+  } else {
+    res.json({
+      status: 201,
+      msg: '请先登录!'
+    });
+  }
+});
+
+// 获得用户的关注（被关注）
+router.post('/getcare', (req, res, next) => {
+  let _id = req.body._id;
+  User.findOne({_id})
+  .populate({path: 'follows.user', select: 'userName sex' })
+  .populate({path: 'cares.user', select: 'userName sex' })
+  .exec((err, user) => {
+    if (err) {
+      res.json({
+        status: 401,
+        msg: err.message
+      })
+    } else {
+      if (user) {
+        res.json({
+          status: 200,
+          msg: '获得用户关注信息成功!',
+          result: {
+            follows: user.follows,
+            cares: user.cares
+          }
+        })
+      } else {
+        res.json({
+          status: 201,
+          msg: '没找到用户信息!'
+        })
+      }
+    }
+  })
+})
 module.exports = router;

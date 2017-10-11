@@ -1,5 +1,6 @@
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 let userSchema = new Schema({
     "userName": {
         type: String,
@@ -29,7 +30,29 @@ let userSchema = new Schema({
     "sex": {
         type: String,
         default: 'nan'
-    }
+    },
+    // 粉丝
+    follows: [{
+        user: {
+            type : ObjectId,
+			ref : 'User'
+        },
+        time: {
+            type: Number,
+            default: new Date().getTime()
+        }
+    }],
+    // 关注的人
+    cares: [{
+        user: {
+            type : ObjectId,
+			ref : 'User'
+        },
+        time: {
+            type: Number,
+            default: new Date().getTime()
+        }
+    }]
 });
 
 module.exports = mongoose.model('User', userSchema);
