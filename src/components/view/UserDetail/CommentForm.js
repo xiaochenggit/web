@@ -6,6 +6,7 @@ const FormItem = Form.Item;
 
 class CommentForm extends Component {
   handleSubmit = (e) => {
+    const { lookUserId, cId, to, success} = this.props; 
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -13,15 +14,15 @@ class CommentForm extends Component {
           url: '/api/usercomment/create',
           type: 'POST',
           data: {
-            user: this.props.lookUserId,
-            cId: this.props.cId,
-            to: this.props.to,
+            user: lookUserId,
+            cId,
+            to,
             ...values
           },
           success: (data) => {
             if (data.status === 200) {
               message.success(data.msg);
-              this.props.success();
+              success();
               // 清空表单
               this.props.form.resetFields();
               this.text.focus();
@@ -35,11 +36,12 @@ class CommentForm extends Component {
   }
   render () {
     const { getFieldDecorator } = this.props.form;
+    const { toUser, reductToComment } = this.props;
     return (
       <div className='commentForm'>
          {
-           this.props.toUser ? 
-           <Button type="primary to" ghost onClick={this.props.reductToComment}>回复: {this.props.toUser}</Button> 
+           toUser ? 
+           <Button type="primary to" ghost onClick={reductToComment}>回复: {toUser}</Button> 
            : ''}
          <Form onSubmit={this.handleSubmit}>
           <FormItem>

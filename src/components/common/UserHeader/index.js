@@ -86,12 +86,13 @@ class UserHeader extends Component {
     PubSub.unsubscribe('getUser');
   }
   render () {
+    const { user , visible } = this.state;
     const menu = (
       <Menu>
         <Menu.Item>
-          <Link to={'/user/detail/' + this.state.user._id }>个人中心</Link>
+          <Link to={'/user/detail/' + user._id }>个人中心</Link>
         </Menu.Item>
-        {this.state.user.role > 0 ? <Menu.Item>
+        {user.role > 0 ? <Menu.Item>
           <Link to={'/user/list'}>用户列表</Link>
         </Menu.Item> : ''}
         <Menu.Item>
@@ -103,14 +104,14 @@ class UserHeader extends Component {
     <Dropdown overlay={menu}>
       <a className="ant-dropdown-link">
       <Avatar src={require('../../../images/user.png')} />
-        {this.state.user.userName}<Icon type="down" />
+        {user.userName}<Icon type="down" />
       </a>
     </Dropdown>
     :
     <div className='login' onClick={this.showModal}>{'登录/注册'}
       <Modal
           title=""
-          visible={this.state.visible}
+          visible={visible}
           onCancel={this.handleCancel}
           footer={null}
           width={400}

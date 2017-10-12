@@ -24,9 +24,10 @@ class CommentList extends Component {
     }
   }
   componentWillReceiveProps (nextProps) {
+    let { current, pageSize } = this.state;
     let commentList = nextProps.commentList;
-    let commentListArray = commentList.slice((this.state.current - 1) * this.state.pageSize,
-     this.state.current * this.state.pageSize);
+    let commentListArray = commentList.slice((current - 1) * pageSize,
+    current * pageSize);
     this.setState({
       commentListArray
     })
@@ -71,9 +72,8 @@ class CommentList extends Component {
     })
   }
   render () {
-    let lookUserId = this.props.lookUserId;
-    let user = this.props.user;
-    let commentListArray = this.state.commentListArray;
+    let { lookUserId, user, commentList} = this.props; 
+    let { commentListArray, pageSize, current, defaultCurrent } = this.state;
     let html = commentListArray.length > 0 ? 
     commentListArray.map((item, index) => 
     // 主留言
@@ -141,13 +141,13 @@ class CommentList extends Component {
       <div className='userCommentList'>
         {html}
         {/* 有第二页时候才会显示分页信息, 大于5页时候，才有跳页操作 */}
-        {this.props.commentList.length > this.state.pageSize ? <Pagination 
-          pageSize={this.state.pageSize}
-          defaultCurrent={this.state.defaultCurrent} 
-          total={this.props.commentList.length}
+        {commentList.length > pageSize ? <Pagination 
+          pageSize={pageSize}
+          defaultCurrent={defaultCurrent} 
+          total={commentList.length}
           onChange={this.changePage}
-          current={this.state.current}
-          showQuickJumper={this.props.commentList.length / this.state.pageSize > 5} 
+          current={current}
+          showQuickJumper={commentList.length / pageSize > 5} 
         /> : ''}
       </div>
     )

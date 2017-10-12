@@ -1,7 +1,7 @@
 import React , { Component } from 'react';
 import UserHeader from './UserHeader/';
 import { Link } from 'react-router-dom';
-import { Menu, Icon } from 'antd';
+import { Menu, Icon , BackTop, Affix} from 'antd';
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -17,7 +17,9 @@ class Header extends Component {
     });
   }
   render() {
+    let { current } = this.state;
     return (
+      <Affix>
       <header className='header'>
         <div className='public'>
           <div className='logo'>
@@ -26,7 +28,7 @@ class Header extends Component {
           <nav>
             <Menu
               onClick={this.handleClick}
-              selectedKeys={[this.state.current]}
+              selectedKeys={[current]}
               mode="horizontal"
             >
               <Menu.Item key="/">
@@ -52,7 +54,13 @@ class Header extends Component {
           </nav>
           <UserHeader />
         </div>
+        <div id='components-back-top-demo-custom'>
+          <BackTop>
+            <div className="ant-back-top-inner">UP</div>
+          </BackTop>
+        </div>
       </header>
+      </Affix>
     )
   }
 }

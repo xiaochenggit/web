@@ -18,6 +18,8 @@ class UserDetail extends Component {
      * {Number} to 回复用户的id
      * {Number} cId 回复主留言的 id
      * {String} toUser 回复用户名字
+     * {Array} follows 用户粉丝数组
+     * {Array} cares 用户关注者数组
      */
     this.state = {
       lookUserId: this.props.match.params.userId,
@@ -115,12 +117,13 @@ class UserDetail extends Component {
   }
   // 获得回复留言
   getToComment = (cId, to, toUser) => {
+    const { user } = this.state;
     this.setState({
       cId,
       to,
       toUser
     });
-    if (this.state.user._id) {
+    if (user._id) {
       document.getElementById('content').focus();
     } else {
       this.Login();
@@ -136,6 +139,7 @@ class UserDetail extends Component {
   }
   // 获得留言板信息
   getUserComments = (lookUserId) => {
+    const { isSortTime } = this.state;
     $.ajax({
       type: 'POST',
       url: '/api/usercomment/getlist',
@@ -145,7 +149,7 @@ class UserDetail extends Component {
       success: (data) => {
         if (data.status === 200) {
           this.setState({
-            userCommentsList: this.state.isSortTime ? data.result.reverse() : data.result
+            userCommentsList: isSortTime ? data.result.reverse() : data.result
           })
         }
       }
@@ -153,7 +157,7 @@ class UserDetail extends Component {
   }
   // 删除留言!
   deleteUserComment = (id) => {
-    let userCommentsList = this.state.userCommentsList;
+    let { userCommentsList } = this.state;
     userCommentsList.forEach((item, index) => {
       if (item._id === id) {
         userCommentsList.splice(index, 1)
@@ -166,14 +170,16 @@ class UserDetail extends Component {
   }
   // 改变排序方式
   changeSortTime = () => {
+    let { isSortTime, lookUserId } = this.state;
     this.setState({
-      isSortTime: !this.state.isSortTime
+      isSortTime: !isSortTime
     })
-    this.getUserComments(this.state.lookUserId)
+    this.getUserComments(lookUserId)
   }
   // 添加关注
   care = (_id, t) => {
-    if (!this.state.user._id) {
+    let { user, lookUserId } = this.state;
+    if (!user._id) {
       return this.Login();
     }
     $.ajax({
@@ -185,7 +191,7 @@ class UserDetail extends Component {
       },
       success: (data) => {
         if (data.status === 200) {
-          this.getCare(this.state.lookUserId);
+          this.getCare(lookUserId);
         }
       }
     })
@@ -195,6 +201,7 @@ class UserDetail extends Component {
     this.timer && clearInterval(this.timer);
   }
   render () {
+    const { lookUser, lookUserId, user, follows, isSortTime, userCommentsList, cId, to, toUser, cares} = this.state;
     return (
       <div className='userdetail'>
         <div className='public'>
@@ -204,28 +211,28 @@ class UserDetail extends Component {
             <div className='userInfo'>
               <div className='userInfoInner'>
                 <div className='userImg'>
-                  <img alt={this.state.lookUser.userName} src={require('../../../images/admin.jpg')}></img>
+                  <img alt={lookUser.userName} src={require('../../../images/admin.jpg')}></img>
                 </div>
                 <div className='userDes'>
                   <h2>
-                    <span className='userName'>{this.state.lookUser.userName}
-                      <span className={'userSex iconfont icon-'+ this.state.lookUser.sex}></span>
+                    <span className='userName'>{lookUser.userName}
+                      <span className={'userSex iconfont icon-'+ lookUser.sex}></span>
                     </span>
                     <span>单身程序狗</span>
                   </h2>
                   <div className='item'>
-                    <span className='iconfont icon-email-two'></span>{this.state.lookUser.email} 
+                    <span className='iconfont icon-email-two'></span>{lookUser.email} 
                   </div>
                   <div className='item'>
-                    <span className='iconfont icon-phone'></span>{this.state.lookUser.phone} 
+                    <span className='iconfont icon-phone'></span>{lookUser.phone} 
                   </div>
                   <div className='btnGroup'>
                     {
-                      this.state.lookUserId === this.state.user._id ? 
+                      lookUserId === user._id ? 
                       <Button type="dashed" className='changeUserInfo'>修改信息</Button> : 
-                      this.getIsCare(this.state.follows, this.state.user._id) ? 
-                      <Button type="dashed" onClick={()=>this.care(this.state.lookUser._id, 'cancel')}>已关注</Button> : 
-                      <Button type="primary" onClick={()=>this.care(this.state.lookUser._id, 'add')}>关注他</Button> }
+                      this.getIsCare(follows, user._id) ? 
+                      <Button type="dashed" onClick={()=>this.care(lookUser._id, 'cancel')}>已关注</Button> : 
+                      <Button type="primary" onClick={()=>this.care(lookUser._id, 'add')}>关注他</Button> }
                   </div>
                 </div>
               </div>
@@ -237,32 +244,32 @@ class UserDetail extends Component {
                 title="留言板" 
                 bordered={false} 
                 style={{ width: '100%' }}
-                extra={<span><span className={'icon-time iconfont' + (this.state.isSortTime ? ' on' : '')} onClick={this.changeSortTime}></span>{this.state.userCommentsList.length + '条'}</span>}
+                extra={<span><span className={'icon-time iconfont' + (isSortTime ? ' on' : '')} onClick={this.changeSortTime}></span>{this.state.userCommentsList.length + '条'}</span>}
               >
                 <CommentList 
-                  commentList={this.state.userCommentsList} 
-                  lookUserId={this.state.lookUserId} 
-                  user={this.state.user} 
+                  commentList={userCommentsList} 
+                  lookUserId={lookUserId} 
+                  user={user} 
                   deleteUserComment={this.deleteUserComment}
                   getToComment={this.getToComment}
-                  success={() => this.getUserComments(this.state.lookUserId)}
+                  success={() => this.getUserComments(lookUserId)}
                 />
                 {
                   this.state.user.userName ? 
                   <CommentForm 
-                  lookUserId={this.state.lookUserId}
-                  cId={this.state.cId}
-                  to={this.state.to}
-                  toUser={this.state.toUser} 
+                  lookUserId={lookUserId}
+                  cId={cId}
+                  to={to}
+                  toUser={toUser} 
                   reductToComment={this.reductToComment}
-                  success={() => this.getUserComments(this.state.lookUserId)}
+                  success={() => this.getUserComments(lookUserId)}
                   /> 
                     : <Button type="primary" onClick={this.Login}>请先登录</Button>}
               </Card>
             </div>
             <div className='userAch shadowBox'>
               <Card title="个人成就" bordered={false} style={{ width: '100%' }}>
-                <FollowsCares cares={this.state.cares} follows={this.state.follows}/>
+                <FollowsCares cares={cares} follows={follows}/>
               </Card>
             </div>
           </div>
