@@ -2,6 +2,7 @@ import React , { Component } from 'react';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
 import FollowsCares from './FollowsCares';
+import ChangeUser from './ChangeUser';
 import { Button, Card  } from 'antd';
 import $ from 'jquery';
 import PubSub from 'pubsub-js';
@@ -229,7 +230,7 @@ class UserDetail extends Component {
                   <div className='btnGroup'>
                     {
                       lookUserId === user._id ? 
-                      <Button type="dashed" className='changeUserInfo'>修改信息</Button> : 
+                      <ChangeUser user={lookUser} changeInfo={() => this.getDetail(lookUserId)}/> : 
                       this.getIsCare(follows, user._id) ? 
                       <Button type="dashed" onClick={()=>this.care(lookUser._id, 'cancel')}>已关注</Button> : 
                       <Button type="primary" onClick={()=>this.care(lookUser._id, 'add')}>关注他</Button> }

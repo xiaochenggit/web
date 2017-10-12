@@ -138,7 +138,42 @@ router.post('/register', (req, res, next) => {
     }
   });
 });
-
+// changeinfo 改变用户信息!
+router.post('/changeinfo', (req, res, next) => {
+  let cookieUser = req.session.user;
+  if (cookieUser) {
+    User.findById({_id: cookieUser._id}, (err, user) => {
+      if (err) {
+        res.json({
+          status: 401,
+          msg: err.message
+        })
+      } else {
+        if (user) {
+          for (var key in req.body) {
+              user[key] = req.body[key]
+          }
+          user.save(()=> {
+            res.json({
+              status: 200,
+              msg: '修改用户数据成功!'
+            })
+          })
+        } else {
+          res.json({
+            status: 201,
+            msg: '请先登录!'
+          })
+        }
+      }
+    })
+  } else {
+    res.json({
+      status: 201,
+      msg: '请先登录!'
+    })
+  }
+})
 // 获得用户详情
 router.post('/detail', (req, res, next) => {
   let _id = req.body.userId;
