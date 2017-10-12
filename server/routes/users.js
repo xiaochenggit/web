@@ -242,7 +242,7 @@ router.post('/care', (req, res, next) => {
                 return;
               }
             })
-            user.follows.push({
+            user.follows.unshift({
               user: cookieUser._id,
               time: new Date().getTime()
             });
@@ -254,7 +254,7 @@ router.post('/care', (req, res, next) => {
                     return;
                   }
                 })
-                user.cares.push({
+                user.cares.unshift({
                   user: _id,
                   time: new Date().getTime()
                 })

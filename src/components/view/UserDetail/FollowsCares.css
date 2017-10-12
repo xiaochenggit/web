@@ -1,0 +1,29 @@
+.modelBox .ant-card-body {
+    padding: 0;
+    margin-top: 8px;
+}
+.modelBox .ant-modal-body {
+    padding: 0 16px 8px;
+}
+.modelBox .ant-card:not(.ant-card-no-hovering):hover {
+    box-shadow: none;
+}
+.modelBox .user{
+    font-size: 1rem;
+    line-height: 32px;
+    height: 32px;
+}
+.modelBox .user a {
+    line-height: 32px;
+}
+.modelBox .user a span {
+    vertical-align: top;
+    margin-right: 0.2rem;
+}
+.modelBox .user .time {
+    float: right;
+}
+.modelBox .users {
+    height: 200px;
+    overflow-x: hidden;
+}
