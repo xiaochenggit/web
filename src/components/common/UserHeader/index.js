@@ -92,6 +92,9 @@ class UserHeader extends Component {
         <Menu.Item>
           <Link to={'/user/detail/' + user._id }>个人中心</Link>
         </Menu.Item>
+        <Menu.Item>
+          <Link to={'/article/create'}>发布文章</Link>
+        </Menu.Item>
         {
           user.role > 0 ? 
           <Menu.Item>

@@ -1,0 +1,9 @@
+.articleCreate .public {
+    margin:  1rem auto;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.articleCreate .inner {
+    padding: 1rem;
+    background-color: #fff;
+}
