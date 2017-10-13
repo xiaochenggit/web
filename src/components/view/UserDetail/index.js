@@ -44,7 +44,8 @@ class UserDetail extends Component {
       lookUserId: nextProps.match.params.userId,
       to: 0,
       cId: 0,
-      toUser: ''
+      toUser: '',
+      isSortTime: true
     });
   }
   componentWillMount () {
@@ -174,8 +175,9 @@ class UserDetail extends Component {
     let { isSortTime, lookUserId } = this.state;
     this.setState({
       isSortTime: !isSortTime
+    }, function() {
+      this.getUserComments(lookUserId)
     })
-    this.getUserComments(lookUserId)
   }
   // 添加关注
   care = (_id, t) => {

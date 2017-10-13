@@ -1,7 +1,7 @@
 import React , { Component } from 'react';
 import UserHeader from './UserHeader/';
 import { Link } from 'react-router-dom';
-import { Menu, Icon , BackTop, Affix} from 'antd';
+import { Menu, Icon , BackTop } from 'antd';
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -19,7 +19,6 @@ class Header extends Component {
   render() {
     let { current } = this.state;
     return (
-      <Affix>
       <header className='header'>
         <div className='public'>
           <div className='logo'>
@@ -60,7 +59,6 @@ class Header extends Component {
           </BackTop>
         </div>
       </header>
-      </Affix>
     )
   }
 }

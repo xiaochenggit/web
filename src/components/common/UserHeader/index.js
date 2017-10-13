@@ -92,9 +92,20 @@ class UserHeader extends Component {
         <Menu.Item>
           <Link to={'/user/detail/' + user._id }>个人中心</Link>
         </Menu.Item>
-        {user.role > 0 ? <Menu.Item>
-          <Link to={'/user/list'}>用户列表</Link>
-        </Menu.Item> : ''}
+        {
+          user.role > 0 ? 
+          <Menu.Item>
+            <Link to={'/user/list'}>用户列表</Link>
+          </Menu.Item> 
+          : ''
+        }
+        {
+          user.role > 0 ? 
+          <Menu.Item>
+            <Link to={'/articlecategory/create'}>创建分类</Link>
+          </Menu.Item> 
+          : ''
+        }
         <Menu.Item>
           <a rel="noopener noreferrer" onClick={this.logOut}>退出</a>
         </Menu.Item>

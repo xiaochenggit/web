@@ -1,0 +1,54 @@
+.articleCategoryCreate .public{
+    margin: 1rem auto;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.articleCategoryCreate .inner {
+    padding: 1rem;
+    background-color: #fff;
+    display: flex;
+}
+.articleCategoryCreate .inner > div {
+    flex: 1;
+}
+.articleCategoryCreate .inner > div.create {
+    margin-right: 2rem;
+}
+.articleCategoryCreate .ant-card-head {
+    padding: 0 1rem;
+}
+.articleCategoryCreate .ant-card-body {
+    padding: 1rem;
+}
+.articleCategoryCreate .categories button {
+    margin: 0 1rem 1rem;
+    font-size: 1rem;
+    position: relative;
+    padding: 0 24px;
+    z-index: 10;
+}
+.articleCategoryCreate .categories button .anticon-close {
+    position: absolute;
+    right: 2px;
+    z-index: 9999;
+}
+.articleCategoryCreate .ant-card:hover{
+    box-shadow: none;
+}
+.articleCategoryCreate .categories button .anticon-close:hover{
+    transform:rotate(360deg);
+    -webkit-transform:rotate(360deg);
+    -moz-transform:rotate(360deg);
+    -o-transform:rotate(360deg);
+    -ms-transform:rotate(360deg);
+}
+.articleCategoryCreate .categories button .anticon-close::before {
+    position: relative;
+    z-index: 9999;
+    font-size: 10px;
+    transform: scale(0.8);
+    transition:All 0.4s ease-in-out;
+    -webkit-transition:All 0.4s ease-in-out;
+    -moz-transition:All 0.4s ease-in-out;
+    -o-transition:All 0.4s ease-in-out;
+}

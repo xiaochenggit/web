@@ -9,6 +9,7 @@ import FooterHTML from './components/common/Footer';
 import Header from './components/common/Header';
 import UserDetail from './components/view/UserDetail/';
 import UserList from './components/view/UserList/';
+import ArticleCategoryCreate from './components/view/articleCategory/create';
 class App extends Component {
   render() {
     return (
@@ -20,6 +21,7 @@ class App extends Component {
             <Route exact path="/list" component={List}/>
             <Route exact path="/user/detail/:userId" component={UserDetail} />
             <Route exact path="/user/list" component={UserList}/>
+            <Route exact path="/articlecategory/create" component={ArticleCategoryCreate}/>
             <FooterHTML />
           </div>
         </Router>
