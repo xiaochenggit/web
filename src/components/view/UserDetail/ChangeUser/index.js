@@ -152,7 +152,7 @@ class ChangeUser extends Component {
               )}
             </FormItem>
             <FormItem {...tailFormItemLayout}>
-              <Button type="primary" htmlType="submit">Register</Button>
+              <Button type="primary" htmlType="submit">确认修改</Button>
             </FormItem>
           </Form>
         </Modal>

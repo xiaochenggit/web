@@ -92,7 +92,7 @@ export default class FollowsCares extends Component {
           <div id='users' className='users'>
             {
               arr.map((item,index) => 
-              <Card style={{ width: '100%' }} key={index} bordered={false}>
+              <Card  key={index} bordered={false}>
                 <div className='user'>
                   <Link to={'/user/detail/' + item.user._id} onClick={this.handleCancel}>
                     <Avatar src={require('../../../images/user.png')} />

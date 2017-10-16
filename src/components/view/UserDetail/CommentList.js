@@ -78,7 +78,7 @@ class CommentList extends Component {
     commentListArray.map((item, index) => 
     // 主留言
     <Card 
-      title={<Link to={'/user/detail/' + item.from._id}>{item.from.userName}</Link>} 
+      title={<Link to={'/user/detail/' + item.from._id}>{item.from.userName}<span className={'iconfont icon-' + item.from.sex}></span></Link>} 
       extra={moment((item.createTime)).fromNow()} bordered={true} key={index}
       className='listOne'
       >
@@ -104,9 +104,9 @@ class CommentList extends Component {
       {item.reply.map((cont, count) => 
         <Card title={
             <span>
-              <Link to={'/user/detail/' + cont.from._id}>{cont.from.userName}</Link>
+              <Link to={'/user/detail/' + cont.from._id}>{cont.from.userName}<span className={'iconfont icon-' + cont.from.sex}></span></Link>
               &nbsp;回复:&nbsp;
-              <Link to={'/user/detail/' + cont.to._id}>{cont.to.userName}</Link>
+              <Link to={'/user/detail/' + cont.to._id}>{cont.to.userName}<span className={'iconfont icon-' + cont.to.sex}></span></Link>
             </span>
           }
           extra={moment((cont.createTime)).fromNow()} bordered={true} key={count}

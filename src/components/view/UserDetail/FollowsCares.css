@@ -3,10 +3,13 @@
     margin-top: 8px;
 }
 .modelBox .ant-modal-body {
-    padding: 0 16px 8px;
+    padding: 0 0px 8px;
 }
 .modelBox .ant-card:not(.ant-card-no-hovering):hover {
     box-shadow: none;
+}
+.modelBox .users .ant-card{
+    margin: 0px 16px;
 }
 .modelBox .user{
     font-size: 1rem;
