@@ -372,4 +372,9 @@ router.post('/getcare', (req, res, next) => {
     }
   })
 })
+
+// 用户头像储存
+router.post('/avatar',(req, res) => {
+  console.log(req.files);
+})
 module.exports = router;

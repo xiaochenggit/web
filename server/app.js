@@ -70,7 +70,8 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
+// file 表单提交
+app.use(require('connect-multiparty')());
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development

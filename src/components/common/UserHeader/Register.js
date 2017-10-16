@@ -1,15 +1,25 @@
 import React , { Component } from 'react';
-import { Form, Input, Tooltip, Icon, Select, Button, message, Radio } from 'antd';
+import { Form, Input, Tooltip, Icon, Select, Button, message, Radio, Upload , Modal} from 'antd';
 import $ from 'jquery';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
+
+
 class Register extends Component {
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
+    previewVisible: false,
+    previewImage: '',
+    fileList: [{
+      uid: -1,
+      name: 'xxx.png',
+      status: 'done',
+      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+    }]
   };
   handleSubmit = (e) => {
     e.preventDefault();
@@ -50,10 +60,27 @@ class Register extends Component {
     }
     callback();
   }
-
+  handleCancel = () => this.setState({ previewVisible: false })
+  
+  handlePreview = (file) => {
+    console.log(file);
+    this.setState({
+      previewImage: file.url || file.thumbUrl,
+      previewVisible: true,
+    });
+  }
+  handleChange = ({ fileList }) => {
+    this.setState({ fileList })
+  }
   render() {
     const { getFieldDecorator } = this.props.form;
-
+    const { previewVisible, previewImage, fileList } = this.state;
+    const uploadButton = (
+      <div>
+        <Icon type="plus" />
+        <div className="ant-upload-text">Upload</div>
+      </div>
+    );
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -149,6 +176,26 @@ class Register extends Component {
               <Radio value="nv">女</Radio>
             </RadioGroup>
           )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="头像"
+        >
+        <div className="avatar">
+          <Upload
+            name='avatar'
+            action="//jsonplaceholder.typicode.com/posts/"
+            listType="picture-card"
+            fileList={fileList}
+            onPreview={this.handlePreview}
+            onChange={this.handleChange}
+          >
+            {fileList.length >= 1 ? null : uploadButton}
+          </Upload>
+          <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+            <img alt="example" style={{ width: '100%' }} src={previewImage} />
+          </Modal>
+        </div>
         </FormItem>
         <FormItem
           {...formItemLayout}
