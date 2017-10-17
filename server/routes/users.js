@@ -36,7 +36,8 @@ router.post('/login', (req, res, next) => {
             result: {
               userName: user.userName,
               _id: user._id,
-              role: user.role
+              role: user.role,
+              avatar: user.avatar
             }
           })
         })
@@ -64,7 +65,8 @@ router.get('/cheklogin', (req, res, next) => {
             result: {
               userName: user.userName,
               _id: user._id,
-              role: user.role
+              role: user.role,
+              avatar: user.avatar
             }
           })
         })
@@ -145,7 +147,8 @@ router.post('/register', (req, res, next) => {
               result: {
                 userName: user.userName,
                 _id: user._id,
-                role: user.role
+                role: user.role,
+                avatar: user.avatar
               }
             })
           }
