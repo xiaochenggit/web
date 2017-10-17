@@ -8,8 +8,8 @@ router.post('/getlist', (req, res, next) => {
   let user = req.body.user;
   if (user) {
     UserComment.find({user})
-    .populate({path: 'from', select: 'userName sex' })
-    .populate({path: 'reply.from reply.to', select: 'userName sex' })
+    .populate({path: 'from', select: 'userName sex avatar' })
+    .populate({path: 'reply.from reply.to', select: 'userName sex avatar' })
     .exec((err, userComments) => {
       if (err) {
         res.json({

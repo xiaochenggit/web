@@ -1,7 +1,7 @@
 import React , { Component } from 'react';
 import {Link} from 'react-router-dom';
 import $ from 'jquery';
-import { Card, Modal, message, Pagination } from 'antd';
+import { Card, Modal, message, Pagination, Avatar } from 'antd';
 require('moment/locale/zh-cn');
 
 let moment = require('moment');
@@ -78,7 +78,12 @@ class CommentList extends Component {
     commentListArray.map((item, index) => 
     // 主留言
     <Card 
-      title={<Link to={'/user/detail/' + item.from._id}>{item.from.userName}<span className={'iconfont icon-' + item.from.sex}></span></Link>} 
+      title={
+        <Link to={'/user/detail/' + item.from._id}>
+          <Avatar src={'http://localhost:3000/userAvatar/'+ (item.from.avatar ? item.from.avatar : 'user.a1f8e6e5.png') } />
+          {item.from.userName}
+          <span className={'iconfont icon-' + item.from.sex}></span>
+        </Link>} 
       extra={moment((item.createTime)).fromNow()} bordered={true} key={index}
       className='listOne'
       >
@@ -104,9 +109,17 @@ class CommentList extends Component {
       {item.reply.map((cont, count) => 
         <Card title={
             <span>
-              <Link to={'/user/detail/' + cont.from._id}>{cont.from.userName}<span className={'iconfont icon-' + cont.from.sex}></span></Link>
+              <Link to={'/user/detail/' + cont.from._id}>
+              <Avatar src={'http://localhost:3000/userAvatar/'+ (cont.from.avatar ? cont.from.avatar : 'user.a1f8e6e5.png') } />
+                {cont.from.userName}
+                <span className={'iconfont icon-' + cont.from.sex}></span>
+              </Link>
               &nbsp;回复:&nbsp;
-              <Link to={'/user/detail/' + cont.to._id}>{cont.to.userName}<span className={'iconfont icon-' + cont.to.sex}></span></Link>
+              <Link to={'/user/detail/' + cont.to._id}>
+              <Avatar src={'http://localhost:3000/userAvatar/'+ (cont.to.avatar ? cont.to.avatar : 'user.a1f8e6e5.png') } />
+                {cont.to.userName}
+                <span className={'iconfont icon-' + cont.to.sex}></span>
+              </Link>
             </span>
           }
           extra={moment((cont.createTime)).fromNow()} bordered={true} key={count}

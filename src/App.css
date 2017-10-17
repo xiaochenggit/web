@@ -143,6 +143,10 @@ a:hover {
 .userdetail .userCommentList .ant-pagination {
     text-align: center;
 }
+.userdetail .userCommentList .ant-card-head-title .ant-avatar{
+    vertical-align: middle;
+    margin-right: 0.2rem;
+}
 .userdetail .commentForm .to{
     margin-bottom: 1rem;
 }
@@ -189,7 +193,15 @@ a:hover {
 .userList .ant-table-tbody > tr > td {
     text-align: center
 }
-
+.userList .ant-table-tbody td.name {
+    text-align: left;
+}
+.userList .ant-table-tbody td.name a .ant-avatar {
+    vertical-align: middle;
+}
+.userList .ant-table-tbody td.name a .ant-avatar {
+    margin-right: 0.2rem;
+}
 /* 回到顶部! */
 
 #components-back-top-demo-custom .ant-back-top {

@@ -214,7 +214,7 @@ class UserDetail extends Component {
             <div className='userInfo'>
               <div className='userInfoInner'>
                 <div className='userImg'>
-                  <img alt={lookUser.userName} src={require('../../../images/admin.jpg')}></img>
+                  <img alt={lookUser.userName} src={'http://localhost:3000/userAvatar/'+ (lookUser.avatar ? lookUser.avatar : 'user.a1f8e6e5.png') }></img>
                 </div>
                 <div className='userDes'>
                   <h2>

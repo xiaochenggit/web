@@ -28,6 +28,9 @@ class Register extends Component {
   };
   handleSubmit = (e) => {
     e.preventDefault();
+    if (this.state.fileList.length === 0) {
+      return message.error('请上传头像!')
+    }
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         $.ajax({
@@ -174,8 +177,9 @@ class Register extends Component {
         >
           {getFieldDecorator('sex', {
             rules: [{
-              required: true, message: 'Please  your sex!',
-            }]
+              required: true, message: 'Please  your sex!'
+            }],
+            initialValue: 'nan'
           })(
             <RadioGroup>
               <Radio value="nan">男</Radio>
@@ -190,7 +194,8 @@ class Register extends Component {
         {getFieldDecorator('avatar', {
             rules: [{
               required: true, message: 'Please  your set avatar!',
-            }]
+            }],
+            initialValue: ''
           })(
             <div className="avatarbox">
               <Upload

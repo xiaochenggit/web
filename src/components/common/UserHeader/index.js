@@ -117,7 +117,6 @@ class UserHeader extends Component {
     let html = this.state.isLogin ?
     <Dropdown overlay={menu}>
       <a className="ant-dropdown-link">
-      
       <Avatar src={'http://localhost:3000/userAvatar/'+ (user.avatar ? user.avatar : 'user.a1f8e6e5.png') } />
         {user.userName}<Icon type="down" />
       </a>

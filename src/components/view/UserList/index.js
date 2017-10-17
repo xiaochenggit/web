@@ -1,5 +1,5 @@
 import React , { Component } from 'react';
-import { Table, Icon, Modal, message} from 'antd';
+import { Table, Icon, Modal, message , Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import '../../../js/dateformat';
 import $ from 'jquery';
@@ -90,7 +90,12 @@ class UserList extends Component {
       title: '用户名',
       dataIndex: 'userName',
       key: 'userName',
-      render: (text, record) => <Link to={'/user/detail/' + record._id }>{text}</Link>,
+      className: 'name',
+      render: (text, record) => 
+      <Link to={'/user/detail/' + record._id }>
+        <Avatar src={'http://localhost:3000/userAvatar/'+ (record.avatar ? record.avatar : 'user.a1f8e6e5.png') } />
+        {text}
+      </Link>,
     }, {
       title: 'email',
       dataIndex: 'email',
