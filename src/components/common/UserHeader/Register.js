@@ -6,7 +6,17 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
-
+function beforeUpload(file) {
+  const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png');
+  if (!isJPG) {
+    message.error('You can  upload JPG or PNG file!');
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    message.error('Image must smaller than 2MB!');
+  }
+  return isJPG && isLt2M;
+}
 
 class Register extends Component {
   state = {
@@ -14,12 +24,7 @@ class Register extends Component {
     autoCompleteResult: [],
     previewVisible: false,
     previewImage: '',
-    fileList: [{
-      uid: -1,
-      name: 'xxx.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    }]
+    fileList: []
   };
   handleSubmit = (e) => {
     e.preventDefault();
@@ -28,7 +33,10 @@ class Register extends Component {
         $.ajax({
           type: 'POST',
           url: '/api/users/register',
-          data: values,
+          data: {
+            ...values,
+            avatar: this.state.fileList[0].response.data.url
+          },
           success: (data) => {
             if (data.status === 200) {
               message.success(data.msg)
@@ -63,7 +71,6 @@ class Register extends Component {
   handleCancel = () => this.setState({ previewVisible: false })
   
   handlePreview = (file) => {
-    console.log(file);
     this.setState({
       previewImage: file.url || file.thumbUrl,
       previewVisible: true,
@@ -111,7 +118,6 @@ class Register extends Component {
         <Option value="87">+87</Option>
       </Select>
     );
-
     return (
       <Form onSubmit={this.handleSubmit} className="login-register">
         <FormItem
@@ -181,21 +187,28 @@ class Register extends Component {
           {...formItemLayout}
           label="头像"
         >
-        <div className="avatar">
-          <Upload
-            name='avatar'
-            action="//jsonplaceholder.typicode.com/posts/"
-            listType="picture-card"
-            fileList={fileList}
-            onPreview={this.handlePreview}
-            onChange={this.handleChange}
-          >
-            {fileList.length >= 1 ? null : uploadButton}
-          </Upload>
-          <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-            <img alt="example" style={{ width: '100%' }} src={previewImage} />
-          </Modal>
-        </div>
+        {getFieldDecorator('avatar', {
+            rules: [{
+              required: true, message: 'Please  your set avatar!',
+            }]
+          })(
+            <div className="avatarbox">
+              <Upload
+                name='avatar'
+                action="/api/users/avatar"
+                listType="picture-card"
+                fileList={fileList}
+                onPreview={this.handlePreview}
+                onChange={this.handleChange}
+                beforeUpload={beforeUpload}
+              >
+                {fileList.length >= 1 ? null : uploadButton}
+              </Upload>
+              <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                <img alt="example" style={{ width: '100%' }} src={previewImage} />
+              </Modal>
+            </div>
+          )}
         </FormItem>
         <FormItem
           {...formItemLayout}
@@ -223,7 +236,7 @@ class Register extends Component {
           )}
         </FormItem>
         <FormItem {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">Register</Button>
+          <Button type="primary" htmlType="submit">注册</Button>
         </FormItem>
       </Form>
     );

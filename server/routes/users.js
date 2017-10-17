@@ -1,7 +1,9 @@
 let express = require('express');
 let router = express.Router();
 let User = require('../models/user');
-
+const path = require('path');
+const fs = require('fs');
+const multipart = require('connect-multiparty');
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -89,6 +91,21 @@ router.get('/logout', (req, res, next) => {
      msg: '登出成功!'
    })
 })
+// 头像储存
+router.post('/avatar', multipart(), (req, res) => {
+  //获得文件名
+  let filename = req.files.avatar.originalFilename || path.basename(req.files.avatar.path);
+  let ArrayName = filename.split('.');
+  let type = ArrayName[ArrayName.length - 1];
+  filename = new Date().getTime() + Math.ceil(Math.random() * 10) + '.' + type;
+  //复制文件到指定路径
+  let targetPath = path.join(__dirname,'../','/public/userAvatar/' + filename);
+  //复制文件流
+  fs.createReadStream(req.files.avatar.path).pipe(fs.createWriteStream(targetPath));
+  //响应ajax请求，告诉它图片传到哪了
+  res.json({ status: 200, data: { url:  filename } });
+});
+
 // 注册
 router.post('/register', (req, res, next) => {
   let userPost = {...req.body};
@@ -113,7 +130,6 @@ router.post('/register', (req, res, next) => {
           msg: '用户名已被占用!'
         })
       } else {
-        userPost.createTime = userPost.loadTime = new Date().getTime();
         let newUser = new User(userPost);
         newUser.save((err, user) => {
           if (err) {
@@ -371,10 +387,5 @@ router.post('/getcare', (req, res, next) => {
       }
     }
   })
-})
-
-// 用户头像储存
-router.post('/avatar',(req, res) => {
-  console.log(req.files);
 })
 module.exports = router;

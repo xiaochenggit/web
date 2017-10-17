@@ -31,6 +31,10 @@ let userSchema = new Schema({
         type: String,
         default: 'nan'
     },
+    "avatar": {
+        type: String,
+        default: ''
+    },
     // 粉丝
     follows: [{
         user: {
