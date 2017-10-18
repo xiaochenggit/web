@@ -1,15 +1,19 @@
 import React , { Component } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
 import $ from 'jquery';
-// import '../../../../editor/js/editormd.min';
-// import '../../../../editor/css/editormd.min.css';
+import E from 'wangeditor'
 import './style.css';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
 class ArticleCreate extends Component {
-
+  constructor(props) {
+    super(props);
+    this.state = {
+      editorContent: ''
+    }
+  }
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -18,7 +22,21 @@ class ArticleCreate extends Component {
       }
     });
   }
-
+  clickHandle = () => {
+    alert(this.state.editorContent)
+  }
+  componentDidMount () {
+    const elem = this.refs.editorElem
+    const editor = new E(elem)
+    // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
+    editor.customConfig.onchange = html => {
+      this.setState({
+        editorContent: html
+      })
+    }
+    editor.customConfig.uploadImgShowBase64 = true
+    editor.create()
+  }
   render () {
 
     const { getFieldDecorator } = this.props.form;
@@ -36,7 +54,10 @@ class ArticleCreate extends Component {
                     <TextArea rows={4} style={{display: 'none'}}/>
                   )}
                 </FormItem>
+                <div ref="editorElem" style={{textAlign: 'left'}}>
+                </div>
               </Form>
+              <button onClick={this.clickHandle.bind(this)}>获取内容</button>
             </div>
           </div>
         </div>
