@@ -97,6 +97,7 @@ export default class FollowsCares extends Component {
                   <Link to={'/user/detail/' + item.user._id} onClick={this.handleCancel}>
                     <Avatar src={'http://localhost:3000/userAvatar/'+ (item.user.avatar ? item.user.avatar : 'user.a1f8e6e5.png') } />
                     {item.user.userName}
+                    <span className={'iconfont icon-' + item.user.sex}></span>
                   </Link>
                   <span className='time'>
                     {moment((item.time)).fromNow()}

@@ -204,6 +204,12 @@ class UserDetail extends Component {
       }
     })
   }
+  // 改变用户信息后 重新获得用户的信息，和留言列表
+  changeInfo = () => {
+    this.getDetail(this.state.lookUserId);
+    this.getUserComments(this.state.lookUserId);
+    PubSub.publish('getUser');
+  }
   componentWillUnmount () {
     PubSub.unsubscribe('changeUser');
     this.timer && clearInterval(this.timer);
@@ -237,7 +243,7 @@ class UserDetail extends Component {
                   <div className='btnGroup'>
                     {
                       lookUserId === user._id ? 
-                      <ChangeUser user={lookUser} changeInfo={() => this.getDetail(lookUserId)}/> : 
+                      <ChangeUser user={lookUser} changeInfo={this.changeInfo}/> : 
                       this.getIsCare(follows, user._id) ? 
                       <Button type="dashed" onClick={()=>this.care(lookUser._id, 'cancel')}>已关注</Button> : 
                       <Button type="primary" onClick={()=>this.care(lookUser._id, 'add')}>关注他</Button> }

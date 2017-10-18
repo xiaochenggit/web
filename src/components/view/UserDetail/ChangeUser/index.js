@@ -1,41 +1,78 @@
 import React , { Component } from 'react';
-import { Modal, Form, Input, Select, Button, message, Radio } from 'antd';
+import { Modal, Form, Input, Select, Button, message, Radio, Upload, Icon } from 'antd';
 import $ from 'jquery';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
+function beforeUpload(file) {
+  const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png');
+  if (!isJPG) {
+    message.error('You can  upload JPG or PNG file!');
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    message.error('Image must smaller than 2MB!');
+  }
+  return isJPG && isLt2M;
+}
+
 // 改变用户信息!
 class ChangeUser extends Component {
-  state = {
-    visible: false,
-    confirmDirty: false,
-    autoCompleteResult: []
+  constructor (props) {
+    super(props);
+    this.state = {
+      visible: false,
+      confirmDirty: false,
+      autoCompleteResult: [],
+      previewVisible: false,
+      previewImage: '',
+      fileList: [{
+        uid: -1,
+        name: 'xxx.png',
+        status: 'done',
+        url: 'http://localhost:3000/userAvatar/' + (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png'),
+        avatar: (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png')
+      }]
+    }
   }
   showModal = () => {
     this.setState({
       visible: true,
+      fileList: [{
+        uid: -1,
+        name: 'xxx.png',
+        status: 'done',
+        url: 'http://localhost:3000/userAvatar/' + (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png'),
+        avatar: (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png')
+      }]
     });
   }
-  handleCancel = () => {
+  handleCancel2 = () => {
     this.setState({
       visible: false,
     });
   }
   handleSubmit = (e) => {
     e.preventDefault();
+    if (this.state.fileList.length === 0) {
+      return message.error('请上传头像!')
+    }
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         $.ajax({
           type: 'POST',
           url: '/api/users/changeinfo',
-          data: values,
+          data: {
+            ...values,
+            avatar: this.state.fileList[0].avatar || this.state.fileList[0].response.data.url
+          },
           success: (data) => {
             if (data.status === 200) {
               message.success(data.msg)
               this.props.changeInfo();
-              this.handleCancel();
+              this.handleCancel2();
             } else {
               message.error(data.msg);
             }
@@ -63,10 +100,26 @@ class ChangeUser extends Component {
     }
     callback();
   };
+  handleCancel = () => this.setState({ previewVisible: false })
+  handlePreview = (file) => {
+    this.setState({
+      previewImage: file.url || file.thumbUrl,
+      previewVisible: true,
+    });
+  }
+  handleChange = ({ fileList }) => {
+    this.setState({ fileList })
+  }
   render() {
-    const { visible } = this.state;
+    const { visible, previewVisible, previewImage, fileList  } = this.state;
     const { user } = this.props;
     const { getFieldDecorator } = this.props.form;
+    const uploadButton = (
+      <div>
+        <Icon type="plus" />
+        <div className="ant-upload-text">Upload</div>
+      </div>
+    );
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -101,11 +154,27 @@ class ChangeUser extends Component {
       <Button type="dashed" className='changeUserInfo' onClick={this.showModal}>修改信息
          <Modal title="修改信息"
           visible={visible}
-          onCancel={this.handleCancel}
+          onCancel={this.handleCancel2}
           footer={null}
           width={400}
         >
           <Form onSubmit={this.handleSubmit} className="login-register">
+            <FormItem
+              {...formItemLayout}
+              label="密码："
+              hasFeedback
+            >
+              {getFieldDecorator('password', {
+                rules: [{
+                  required: true, message: 'Please input your password!',
+                }, {
+                  validator: this.checkConfirm,
+                }],
+                initialValue: user.password
+              })(
+                <Input type="password" />
+              )}
+            </FormItem>
             <FormItem
               {...formItemLayout}
               label="性别"
@@ -120,6 +189,30 @@ class ChangeUser extends Component {
                   <Radio value="nan">男</Radio>
                   <Radio value="nv">女</Radio>
                 </RadioGroup>
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="头像"
+            >
+            {getFieldDecorator('avatar', {
+              })(
+                <div className="avatarbox">
+                  <Upload
+                    name='avatar'
+                    action="/api/users/avatar"
+                    listType="picture-card"
+                    fileList={fileList}
+                    onPreview={this.handlePreview}
+                    onChange={this.handleChange}
+                    beforeUpload={beforeUpload}
+                  >
+                    {fileList.length >= 1 ? null : uploadButton}
+                  </Upload>
+                  <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                    <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                  </Modal>
+                </div>
               )}
             </FormItem>
             <FormItem
