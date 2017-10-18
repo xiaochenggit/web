@@ -157,6 +157,11 @@ class UserDetail extends Component {
       }
     })
   }
+  // 评论成功之后 
+  commentFormSuccess = () => {
+    this.getUserComments(this.state.lookUserId);
+    this.reductToComment();
+  }
   // 删除留言!
   deleteUserComment = (id) => {
     let { userCommentsList } = this.state;
@@ -265,7 +270,7 @@ class UserDetail extends Component {
                   to={to}
                   toUser={toUser} 
                   reductToComment={this.reductToComment}
-                  success={() => this.getUserComments(lookUserId)}
+                  success={this.commentFormSuccess}
                   /> 
                     : <Button type="primary" onClick={this.Login}>请先登录</Button>}
               </Card>

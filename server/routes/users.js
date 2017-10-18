@@ -364,8 +364,8 @@ router.post('/care', (req, res, next) => {
 router.post('/getcare', (req, res, next) => {
   let _id = req.body._id;
   User.findOne({_id})
-  .populate({path: 'follows.user', select: 'userName sex' })
-  .populate({path: 'cares.user', select: 'userName sex' })
+  .populate({path: 'follows.user', select: 'userName sex avatar' })
+  .populate({path: 'cares.user', select: 'userName sex avatar' })
   .exec((err, user) => {
     if (err) {
       res.json({

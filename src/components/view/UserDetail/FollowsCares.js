@@ -35,7 +35,7 @@ export default class FollowsCares extends Component {
      */
     let { pageNum, time } = this.state;
     this.setState({
-      visible: true,
+      visible: this.props[type].length > 0 ? true : false,
       index: 1,
       arr: this.props[type].slice(0, 1 * pageNum),
       maxIndex: Math.ceil(this.props[type].length / pageNum),
@@ -95,7 +95,7 @@ export default class FollowsCares extends Component {
               <Card  key={index} bordered={false}>
                 <div className='user'>
                   <Link to={'/user/detail/' + item.user._id} onClick={this.handleCancel}>
-                    <Avatar src={require('../../../images/user.png')} />
+                    <Avatar src={'http://localhost:3000/userAvatar/'+ (item.user.avatar ? item.user.avatar : 'user.a1f8e6e5.png') } />
                     {item.user.userName}
                   </Link>
                   <span className='time'>
