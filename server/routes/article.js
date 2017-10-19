@@ -1,0 +1,110 @@
+var express = require('express');
+var router = express.Router();
+
+let Article = require('../models/article');
+let ArticleCategory = require('../models/articleCategory');
+const path = require('path');
+const fs = require('fs');
+const multipart = require('connect-multiparty');
+
+// 储存文章里的图片
+router.post('/images', multipart(), (req, res, next) => {
+    let dataImage = req.files.articleImages;
+    if (dataImage.length > 0) {
+        var data = [];
+        dataImage.forEach((item) => {
+            let filename = item.originalFilename;
+            let ArrayName = filename.split('.');
+            ArrayName.splice(ArrayName.length - 1, 0, (new Date().getTime() + Math.ceil(Math.random() * 10) + '.'));
+            filename = ArrayName.join('');
+            //复制文件到指定路径
+            let targetPath = path.join(__dirname,'../','/public/articleImages/' + filename);
+            //复制文件流
+            fs.createReadStream(item.path).pipe(fs.createWriteStream(targetPath));
+            //响应ajax请求，告诉它图片传到哪了
+            data.push('http://localhost:3000/articleImages/' + filename)
+        });
+        res.json({ errno: 0, data: data });
+    } else {
+        let filename = dataImage.originalFilename;
+        let ArrayName = filename.split('.');
+        ArrayName.splice(ArrayName.length - 1, 0, (new Date().getTime() + Math.ceil(Math.random() * 10) + '.'));
+        filename = ArrayName.join('');
+        //复制文件到指定路径
+        let targetPath = path.join(__dirname,'../','/public/articleImages/' + filename);
+        //复制文件流
+        fs.createReadStream(dataImage.path).pipe(fs.createWriteStream(targetPath));
+        //响应ajax请求，告诉它图片传到哪了
+        res.json({ errno: 0, data: ['http://localhost:3000/articleImages/' + filename ] });
+    }
+})
+
+// 创建文章
+router.post('/create', (req, res, next) => {
+		let data = req.body;
+		
+		let cookieUser = req.session.user;
+		if (cookieUser) {
+			// 判断文章名字是否存在
+			Article.findOne({name: data.name}, (err, artice) => { 
+				if (artice) {
+					res.json({
+						status: 201,
+						msg: '文章名已经存在!'
+					})
+				} else {
+					let cateArray = data['categories[]'];
+					let categories = []
+	
+					// 判断文章是多选还是单选 单选改成多选形式
+					if (!(cateArray instanceof Array)) {
+						let arr = [];
+						arr.push(cateArray);
+						cateArray = arr;
+					}
+	
+					// 改成符合服务器数据的格式
+					cateArray.forEach((item) => {
+						categories.push({ category: item})
+					})
+					data.categories = categories;
+	
+					// 创建时间 和 更新时间 作者
+					data.createTime = data.updateTime = new Date().getTime();
+					data.author = cookieUser._id;
+					// 创建新文章
+					let newArticle = new Article({ ...data });
+					newArticle.save((err, article) => {
+						if (err) {
+							res.json({
+								status: 401,
+								msg: err.message
+							})
+						} else {
+	
+							// 在分类列表中添加文章
+							cateArray.forEach((item) => {
+								ArticleCategory.findOne({_id: item}, (err, articleCategory) => {
+									articleCategory.articles.unshift({ article: article._id});
+									articleCategory.save();
+								})
+							});
+							res.json({
+								status: 200,
+								msg: '创建文章成功!',
+								result: {
+									_id: article._id
+								}
+							})
+						}
+					})
+				}
+			})
+		} else {
+			res.json({
+				status: 201,
+				msg: '请先登录!'
+			})
+		}
+})
+module.exports = router;

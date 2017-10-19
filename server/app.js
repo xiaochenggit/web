@@ -15,6 +15,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var userComment = require('./routes/userComment');
 var articleCategory = require('./routes/articleCategory');
+var article = require('./routes/article');
 var app = express();
 
 // view engine setup
@@ -64,6 +65,7 @@ app.use('/', index);
 app.use('/api/users', users);
 app.use('/api/usercomment', userComment);
 app.use('/api/articlecategory', articleCategory);
+app.use('/api/article', article);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

@@ -7,3 +7,6 @@
     padding: 1rem;
     background-color: #fff;
 }
+.articleCreate .ant-form-item-label {
+    text-align: left;
+}

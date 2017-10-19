@@ -4,9 +4,9 @@ let ArticleCategory = require('../models/articleCategory');
 
 // 获得信息
 
-router.get('/create', (req, res, next) => {
+router.get('/list', (req, res, next) => {
   let cookieUser = req.session.user;
-  if (cookieUser && cookieUser.role >= 10) {
+  if (cookieUser) {
     ArticleCategory.find({}, (err, artCates) => {
       if (err) {
         res.json({

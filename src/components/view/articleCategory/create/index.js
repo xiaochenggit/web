@@ -21,7 +21,7 @@ class ArticleCategoryCreate extends Component {
   // 获得文章分类数据
   getArticleCategories = () => {
     $.ajax({
-      url: '/api/articlecategory/create',
+      url: '/api/articlecategory/list',
       type: 'GET',
       success: (data) => {
         if (data.status === 200) {
