@@ -42,7 +42,6 @@ router.post('/images', multipart(), (req, res, next) => {
 // 创建文章
 router.post('/create', (req, res, next) => {
 		let data = req.body;
-		
 		let cookieUser = req.session.user;
 		if (cookieUser) {
 			// 判断文章名字是否存在
@@ -106,5 +105,26 @@ router.post('/create', (req, res, next) => {
 				msg: '请先登录!'
 			})
 		}
+})
+
+// 获取文章列表
+router.get('/list', (req, res, next) => {
+  Article.find({})
+  .populate({path: 'author', select: 'sex userName avatar'})
+  .exec((err, articles) => {
+    if (err) {
+      res.json({
+        status: 401,
+        msg: err.message
+      })
+    } else {
+      res.json({
+        status: 200,
+        result: {
+          articles
+        }
+      })
+    }
+  })
 })
 module.exports = router;
