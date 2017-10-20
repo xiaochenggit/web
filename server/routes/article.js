@@ -127,4 +127,29 @@ router.get('/list', (req, res, next) => {
     }
   })
 })
+
+// 获得文章信息
+router.post('/detail', (req, res, next) => {
+	let _id = req.body._id;
+	if (_id) {
+		Article.findOne({ _id })
+		.populate({ path: 'author', select: 'userName sex avatar' })
+		.exec((err, article) => {
+			if (err) {
+				res.json({ status: 401,msg: err.message });
+			} else {
+				if (article) {
+					res.json({ status: 200,msg: '获取文章信息成功!',result: { article } })
+				} else {
+					res.json({ status: 201,msg: '文章已经不存在!'})
+				}
+			}
+		})
+	} else {
+		res.json({
+			status: 201,
+			msg: '文章id错误'
+		})
+	}
+})
 module.exports = router;

@@ -41,7 +41,9 @@ class List extends Component {
     let articleHTML = articles.map((item, index) =>
       <li className='articleItem' key={index}>
         <p className='articleName'>
-          {item.name}
+          <Link to={ '/article/detail/' + item._id }>
+            {item.name}
+          </Link>
         </p>
         <p className='articleAuthor'>
           <Link to={ '/user/detail/' + item.author._id }>

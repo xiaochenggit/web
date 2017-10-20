@@ -11,6 +11,7 @@ import UserDetail from './components/view/UserDetail/';
 import UserList from './components/view/UserList/';
 import ArticleCategoryCreate from './components/view/articleCategory/create';
 import ArticleCreate from './components/view/article/create';
+import Article from './components/view/article';
 class App extends Component {
   render() {
     return (
@@ -24,6 +25,7 @@ class App extends Component {
             <Route exact path="/user/list" component={UserList}/>
             <Route exact path="/articlecategory/create" component={ArticleCategoryCreate}/>
             <Route exact path="/article/create" component={ArticleCreate}/>
+            <Route exact path="/article/detail/:articleId" component={Article} />
             <FooterHTML />
           </div>
         </Router>
