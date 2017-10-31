@@ -72,7 +72,15 @@ router.post('/create', (req, res, next) => {
 					data.createTime = data.updateTime = new Date().getTime();
 					data.author = cookieUser._id;
 					// 创建新文章
-					let newArticle = new Article({ ...data });
+					let newArticle = new Article({
+						name: data.name,
+						categories: data.categories,
+						describe: data.describe,
+						author: data.author,
+						createTime: data.createTime,
+						updateTime: data.updateTime,
+						content: data.content,
+					});
 					newArticle.save((err, article) => {
 						if (err) {
 							res.json({

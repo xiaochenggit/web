@@ -49,7 +49,9 @@ router.post('/create', (req, res, next) => {
           })
         } else {
           let newArticleCategory = new ArticleCategory({
-            ...req.body,
+            name: req.body.name,
+            describe: req.body.describe,
+            user: cookieUser._id,
             createTime: new Date().getTime()
           });
           newArticleCategory.save(()=> {

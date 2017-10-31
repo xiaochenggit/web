@@ -111,7 +111,7 @@ router.post('/avatar', multipart(), (req, res) => {
 
 // 注册
 router.post('/register', (req, res, next) => {
-  let userPost = {...req.body};
+  let userPost = req.body;
   if (!userPost.userName.trim() || !userPost.password.trim()) {
     res.json({
       status: 201,

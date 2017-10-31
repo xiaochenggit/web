@@ -69,7 +69,7 @@ class UserList extends Component {
             userArray: this.addKey(data.result)
           })
         } else {
-          this.props.history.push('/')
+          this.props.history.push('/');
         }
       }
     })

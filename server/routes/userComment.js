@@ -69,7 +69,9 @@ router.post('/create', (req, res, next) => {
       })
     } else { // 一级留言
       let userComment = {
-        ...req.body,
+        content: req.body.content,
+        to: req.body.to,
+        user: req.body.user,
         from: cookieUser._id, 
         createTime: new Date().getTime()
       }

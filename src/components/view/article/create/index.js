@@ -59,7 +59,7 @@ class ArticleCreate extends Component {
           },
           success: (data) => {
             if (data.status === 200) {
-              console.log('创建文章成功!')
+              this.props.history.push('/article/detail/' + data.result._id);
             } else {
               message.error(data.msg);
             }
