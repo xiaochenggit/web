@@ -27,7 +27,8 @@ export default class FollowsCares extends Component {
     index: 1,
     maxIndex: 2,
     pageNum: 10,
-    time: 0
+    time: 0,
+    domain: 'http://localhost:80'
   }
   showModal = (type) => {
     /**
@@ -71,7 +72,7 @@ export default class FollowsCares extends Component {
     })
   }
   render () {
-    const { visible, title , arr } = this.state;
+    const { visible, title , arr, domain } = this.state;
     const { follows, cares } = this.props; 
     return (
       <div className='followsCares'>
@@ -95,7 +96,7 @@ export default class FollowsCares extends Component {
               <Card  key={index} bordered={false}>
                 <div className='user'>
                   <Link to={'/user/detail/' + item.user._id} onClick={this.handleCancel}>
-                    <Avatar src={'http://localhost:3000/userAvatar/'+ (item.user.avatar ? item.user.avatar : 'user.a1f8e6e5.png') } />
+                    <Avatar src={domain + '/userAvatar/'+ (item.user.avatar ? item.user.avatar : 'user.a1f8e6e5.png') } />
                     {item.user.userName}
                     <span className={'iconfont icon-' + item.user.sex}></span>
                   </Link>

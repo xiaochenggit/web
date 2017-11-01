@@ -19,7 +19,8 @@ class UserHeader extends Component {
    this.state = {
      user: '',
      isLogin: false,
-     visible: false
+     visible: false,
+     domain: 'http://localhost:80'
    }
   }
   // 显示弹窗
@@ -86,7 +87,7 @@ class UserHeader extends Component {
     PubSub.unsubscribe('getUser');
   }
   render () {
-    const { user , visible } = this.state;
+    const { user, visible, domain } = this.state;
     const menu = (
       <Menu>
         <Menu.Item>
@@ -117,7 +118,7 @@ class UserHeader extends Component {
     let html = this.state.isLogin ?
     <Dropdown overlay={menu}>
       <a className="ant-dropdown-link">
-      <Avatar src={'http://localhost:3000/userAvatar/'+ (user.avatar ? user.avatar : 'user.a1f8e6e5.png') } />
+      <Avatar src={ domain + '/userAvatar/'+ (user.avatar ? user.avatar : 'user.a1f8e6e5.png') } />
         {user.userName}
         <span className={'iconfont icon-' + user.sex}></span>
         <Icon type="down" />

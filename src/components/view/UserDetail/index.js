@@ -33,7 +33,8 @@ class UserDetail extends Component {
       cId: 0,
       toUser: '',
       follows: [],
-      cares: []
+      cares: [],
+      domain: 'http://localhost:80'
     }
   } 
   componentWillReceiveProps(nextProps) {
@@ -215,7 +216,7 @@ class UserDetail extends Component {
     this.timer && clearInterval(this.timer);
   }
   render () {
-    const { lookUser, lookUserId, user, follows, isSortTime, userCommentsList, cId, to, toUser, cares} = this.state;
+    const { lookUser, lookUserId, user, follows, isSortTime, userCommentsList, cId, to, toUser, cares, domain} = this.state;
     return (
       <div className='userdetail'>
         <div className='public'>
@@ -225,7 +226,7 @@ class UserDetail extends Component {
             <div className='userInfo'>
               <div className='userInfoInner'>
                 <div className='userImg'>
-                  <img alt={lookUser.userName} src={'http://localhost:3000/userAvatar/'+ (lookUser.avatar ? lookUser.avatar : 'user.a1f8e6e5.png') }></img>
+                  <img alt={lookUser.userName} src={domain + '/userAvatar/'+ (lookUser.avatar ? lookUser.avatar : 'user.a1f8e6e5.png') }></img>
                 </div>
                 <div className='userDes'>
                   <h2>

@@ -73,19 +73,23 @@ router.post('/create', (req, res, next) => {
 router.post('/delete', (req, res, next) => {
   let cookieUser = req.session.user;
   if (cookieUser && cookieUser.role >= 10) {
-    ArticleCategory.remove({_id: req.body._id}, (err) => {
-      if (err) {
-        res.json({
-          status: 401,
-          msg: err.message
-        })
-      } else {
-        res.json({
-          status: 200,
-          msg: '删除分类成功！'
-        })
-      }
+    res.json({
+        status: 201,
+        msg: '该功能未开启'
     })
+    // ArticleCategory.remove({_id: req.body._id}, (err) => {
+    //   if (err) {
+    //     res.json({
+    //       status: 401,
+    //       msg: err.message
+    //     })
+    //   } else {
+    //     res.json({
+    //       status: 200,
+    //       msg: '删除分类成功！'
+    //     })
+    //   }
+    // })
   } else {
     res.json({
       status: 201,

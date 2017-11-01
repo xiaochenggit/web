@@ -17,7 +17,7 @@ function beforeUpload(file) {
   }
   return isJPG && isLt2M;
 }
-
+const domain = 'http://localhost:80';
 // 改变用户信息!
 class ChangeUser extends Component {
   constructor (props) {
@@ -32,7 +32,7 @@ class ChangeUser extends Component {
         uid: -1,
         name: 'xxx.png',
         status: 'done',
-        url: 'http://localhost:3000/userAvatar/' + (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png'),
+        url: domain + '/userAvatar/' + (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png'),
         avatar: (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png')
       }]
     }
@@ -44,7 +44,7 @@ class ChangeUser extends Component {
         uid: -1,
         name: 'xxx.png',
         status: 'done',
-        url: 'http://localhost:3000/userAvatar/' + (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png'),
+        url: domain + '/userAvatar/' + (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png'),
         avatar: (this.props.user.avatar ? this.props.user.avatar : 'user.a1f8e6e5.png')
       }]
     });

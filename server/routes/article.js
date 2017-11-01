@@ -22,7 +22,7 @@ router.post('/images', multipart(), (req, res, next) => {
             //复制文件流
             fs.createReadStream(item.path).pipe(fs.createWriteStream(targetPath));
             //响应ajax请求，告诉它图片传到哪了
-            data.push('http://localhost:3000/articleImages/' + filename)
+            data.push('http://localhost:80/articleImages/' + filename)
         });
         res.json({ errno: 0, data: data });
     } else {
@@ -35,7 +35,7 @@ router.post('/images', multipart(), (req, res, next) => {
         //复制文件流
         fs.createReadStream(dataImage.path).pipe(fs.createWriteStream(targetPath));
         //响应ajax请求，告诉它图片传到哪了
-        res.json({ errno: 0, data: ['http://localhost:3000/articleImages/' + filename ] });
+        res.json({ errno: 0, data: ['http://localhost:80/articleImages/' + filename ] });
     }
 })
 

@@ -13,7 +13,8 @@ class UserList extends Component {
      * {Array} userArray 用户数组
      */
     this.state = {
-      userArray: []
+      userArray: [],
+      domain: 'http://localhost:80'
     }
   }
   //  过滤一下 用户数组里的参数
@@ -80,7 +81,8 @@ class UserList extends Component {
     confirm({
       title: '你确定要删除此用户吗?',
       onOk() {
-        that.delete(id);
+        message.error('此功能还未完善！');
+        // that.delete(id);
       }
     });
   }       
@@ -93,7 +95,7 @@ class UserList extends Component {
       className: 'name',
       render: (text, record) => 
       <Link to={'/user/detail/' + record._id }>
-        <Avatar src={'http://localhost:3000/userAvatar/'+ (record.avatar ? record.avatar : 'user.a1f8e6e5.png') } />
+        <Avatar src={ this.state.domain + '/userAvatar/'+ (record.avatar ? record.avatar : 'user.a1f8e6e5.png') } />
         {text}
       </Link>,
     }, {

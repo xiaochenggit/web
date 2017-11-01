@@ -20,7 +20,8 @@ class CommentList extends Component {
       commentListArray: [],
       pageSize: 10,
       defaultCurrent: 1,
-      current: 1
+      current: 1,
+      domain: 'http://localhost:80'
     }
   }
   componentWillReceiveProps (nextProps) {
@@ -73,14 +74,14 @@ class CommentList extends Component {
   }
   render () {
     let { lookUserId, user, commentList} = this.props; 
-    let { commentListArray, pageSize, current, defaultCurrent } = this.state;
+    let { commentListArray, pageSize, current, defaultCurrent, domain } = this.state;
     let html = commentListArray.length > 0 ? 
     commentListArray.map((item, index) => 
     // 主留言
     <Card 
       title={
         <Link to={'/user/detail/' + item.from._id}>
-          <Avatar src={'http://localhost:3000/userAvatar/'+ (item.from.avatar ? item.from.avatar : 'user.a1f8e6e5.png') } />
+          <Avatar src={domain + '/userAvatar/'+ (item.from.avatar ? item.from.avatar : 'user.a1f8e6e5.png') } />
           {item.from.userName}
           <span className={'iconfont icon-' + item.from.sex}></span>
         </Link>} 
@@ -110,13 +111,13 @@ class CommentList extends Component {
         <Card title={
             <span>
               <Link to={'/user/detail/' + cont.from._id}>
-              <Avatar src={'http://localhost:3000/userAvatar/'+ (cont.from.avatar ? cont.from.avatar : 'user.a1f8e6e5.png') } />
+              <Avatar src={domain + '/userAvatar/'+ (cont.from.avatar ? cont.from.avatar : 'user.a1f8e6e5.png') } />
                 {cont.from.userName}
                 <span className={'iconfont icon-' + cont.from.sex}></span>
               </Link>
               &nbsp;回复:&nbsp;
               <Link to={'/user/detail/' + cont.to._id}>
-              <Avatar src={'http://localhost:3000/userAvatar/'+ (cont.to.avatar ? cont.to.avatar : 'user.a1f8e6e5.png') } />
+              <Avatar src={domain + '/userAvatar/'+ (cont.to.avatar ? cont.to.avatar : 'user.a1f8e6e5.png') } />
                 {cont.to.userName}
                 <span className={'iconfont icon-' + cont.to.sex}></span>
               </Link>

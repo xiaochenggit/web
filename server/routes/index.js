@@ -17,4 +17,10 @@ router.get('/user/list', function(req, res, next) {
 router.get('/articlecategory/create', function(req, res, next) {
   res.render('index');
 });
+router.get('/article/detail/*', function(req, res, next) {
+  res.render('index');
+});
+router.get('/article/create', function(req, res, next) {
+  res.render('index');
+});
 module.exports = router;
