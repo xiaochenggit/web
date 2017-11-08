@@ -2,7 +2,7 @@ import React , { Component } from 'react';
 import {Link} from 'react-router-dom';
 import $ from 'jquery';
 import './style.css';
-
+import Page from '../../common/Page/index';
 require('moment/locale/zh-cn');
 let moment = require('moment');
 
@@ -11,10 +11,15 @@ class List extends Component {
   constructor () {
     super();
     /**
-     * {Array} articles 文章列表数组
+     * [state description]
+     * @articles {Array} 页面总数据
+     * @articlesArr {Array} 当前页数据
+     * @pageSize {Number} 页面条目数量
      */
     this.state = {
-      articles: []
+      articles: [],
+      articlesArr: [],
+      pageSize: 10
     }
   }
 
@@ -28,22 +33,33 @@ class List extends Component {
       url: '/api/article/list',
       success: (data) => {
         if (data.status === 200) {
+          let articles = data.result.articles;
           this.setState({
-            articles: data.result.articles
+            articles,
+            articlesArr: articles.slice(0, this.state.pageSize)
           }) 
         }
       }
     })
   }
 
+  onChange = (articlesArr) => {
+   this.setState({
+    articlesArr
+   })
+  }
+
   render () {
-    let { articles } = this.state;
-    let articleHTML = articles.map((item, index) =>
+    let { articlesArr, articles, pageSize, defaultCurrent } = this.state;
+    let articleHTML = articlesArr.map((item, index) =>
       <li className='articleItem' key={index}>
         <p className='articleName'>
           <Link to={ '/article/detail/' + item._id }>
             {item.name}
           </Link>
+        </p>
+        <p className='articleDescribe'>
+          {item.describe}
         </p>
         <p className='articleAuthor'>
           <Link to={ '/user/detail/' + item.author._id }>
@@ -51,9 +67,6 @@ class List extends Component {
             <span className={'iconfont icon-' + item.author.sex}></span>
           </Link>
           <span className='articleTime'>{ moment(item.createTime).format('YYYY-MM-DD') }</span>
-        </p>
-        <p className='articleDescribe'>
-          {item.describe}
         </p>
       </li>
     )
@@ -64,6 +77,13 @@ class List extends Component {
             <ul className='articleGroup'>
               {articleHTML}
             </ul>
+            {
+            articles.length > pageSize ?
+            <Page arr={articles}
+              pageSize={pageSize}
+              onChange={this.onChange}
+            /> : ""
+            }
           </div>
         </div>
       </div>

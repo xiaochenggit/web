@@ -4,3 +4,21 @@
     border-radius: 4px;
     overflow: hidden;
 }
+.articleList .inner {
+    padding: 1rem;
+}
+.articleGroup .articleItem {
+    padding: 0.5rem;
+}
+.articleGroup .articleItem + .articleItem {
+	border-top: 1px #ccc dashed;
+}
+.articleGroup .articleName {
+    font-size: 1.4rem;
+}
+.articleGroup .articleAuthor>span{
+    margin: 0.5rem;
+}
+.articleGroup .articleDescribe {
+    font-size: 1.2rem;
+}
