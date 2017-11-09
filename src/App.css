@@ -154,10 +154,6 @@ a:hover {
 .userdetail .userCommentList .ant-pagination {
     text-align: center;
 }
-.userdetail .userCommentList .ant-card-head-title .ant-avatar{
-    vertical-align: middle;
-    margin-right: 0.2rem;
-}
 .userdetail .commentForm .to{
     margin-bottom: 1rem;
 }

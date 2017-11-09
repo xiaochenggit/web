@@ -6,6 +6,16 @@
 }
 .articleList .inner {
     padding: 1rem;
+    position: relative;
+}
+.articleList .inner .time-btn{
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    cursor: pointer;
+}
+.articleList .inner .time-btn .icon-time.on{
+    color: red;
 }
 .articleGroup .articleItem {
     padding: 0.5rem;
@@ -15,6 +25,12 @@
 }
 .articleGroup .articleName {
     font-size: 1.4rem;
+}
+.articleGroup .articleAuthor .ant-avatar  {
+    margin-top: 0px;
+}
+.articleGroup .articleAuthor {
+    line-height: 32px;
 }
 .articleGroup .articleAuthor>span{
     margin: 0.5rem;

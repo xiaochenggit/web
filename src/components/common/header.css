@@ -38,10 +38,10 @@
 .user-header .ant-menu-horizontal {
     border-bottom: none;
 }
-.user-header .ant-avatar {
+.ant-avatar {
     vertical-align: top;
     margin-top: 8px;
-    margin-right: 2px;
+    margin-right: 0.2rem;
 }
 .login-form .ant-btn-primary,
 .login-register .ant-btn-primary {

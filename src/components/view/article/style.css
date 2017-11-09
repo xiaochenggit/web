@@ -3,3 +3,25 @@
     background-color: #fff;
     overflow: hidden;
 }
+.articleDetail .inner {
+	padding: 1rem;
+}
+.article-box.w-e-text {
+	overflow: hidden;
+}
+.article-box .articleName{
+	font-size: 1.4rem;
+	text-align: center;
+}
+.article-box .articleDes {
+	text-align: center;
+}
+.article-box .articleDes .ant-avatar {
+	margin-top: 0px;
+}
+.article-box .articleDes {
+	line-height: 32px;
+}
+.article-box .articleDes>span{
+	margin: 0.5rem;
+}

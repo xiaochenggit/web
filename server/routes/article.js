@@ -3,6 +3,7 @@ var router = express.Router();
 
 let Article = require('../models/article');
 let ArticleCategory = require('../models/articleCategory');
+let User = require("../models/user");
 const path = require('path');
 const fs = require('fs');
 const multipart = require('connect-multiparty');
@@ -88,7 +89,17 @@ router.post('/create', (req, res, next) => {
 								msg: err.message
 							})
 						} else {
-	
+
+							// 为用户添加文章
+							User.findOne({_id: cookieUser._id}, (err, user) => {
+								if (user) {
+									user.articles.unshift({
+										article: article._id
+									})
+									user.save();
+								}
+							})
+
 							// 在分类列表中添加文章
 							cateArray.forEach((item) => {
 								ArticleCategory.findOne({_id: item}, (err, articleCategory) => {
@@ -96,6 +107,7 @@ router.post('/create', (req, res, next) => {
 									articleCategory.save();
 								})
 							});
+							
 							res.json({
 								status: 200,
 								msg: '创建文章成功!',

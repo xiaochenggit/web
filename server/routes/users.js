@@ -205,6 +205,7 @@ router.post('/detail', (req, res, next) => {
       })
     } else {
       if (user) {
+        delete user.password;
         res.json({
           status: 200,
           msg: '获得用户数据成功!',

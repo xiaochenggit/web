@@ -31,6 +31,12 @@ let userSchema = new Schema({
         type: String,
         default: 'nan'
     },
+    "articles": [{
+        article: {
+            type : ObjectId,
+            ref : 'Article'
+        }
+    }],
     "avatar": {
         type: String,
         default: ''

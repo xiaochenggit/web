@@ -1,5 +1,6 @@
 import React , { Component } from 'react';
 import {Link} from 'react-router-dom';
+import { Avatar } from 'antd';
 import $ from 'jquery';
 import './style.css';
 import Page from '../../common/Page/index';
@@ -19,7 +20,10 @@ class List extends Component {
     this.state = {
       articles: [],
       articlesArr: [],
-      pageSize: 10
+      current: 1,
+      pageSize: 10,
+      domain: 'http://localhost:80',
+      isSortTime: true
     }
   }
 
@@ -33,7 +37,7 @@ class List extends Component {
       url: '/api/article/list',
       success: (data) => {
         if (data.status === 200) {
-          let articles = data.result.articles;
+          let articles = data.result.articles.reverse();
           this.setState({
             articles,
             articlesArr: articles.slice(0, this.state.pageSize)
@@ -43,14 +47,25 @@ class List extends Component {
     })
   }
 
-  onChange = (articlesArr) => {
+  onChange = (current) => {
+   let {articles, pageSize} = this.state;
+   let newArr = articles.slice(pageSize * (current - 1), pageSize * current);
    this.setState({
-    articlesArr
+      current,
+      articlesArr: newArr
    })
   }
-
+  changeSortTime = () => {
+    let articles = this.state.articles.reverse();
+    this.setState({
+      isSortTime: !this.state.isSortTime,
+      articles,
+      current: 1,
+      articlesArr: articles.slice(0, this.state.pageSize)
+    })
+  }
   render () {
-    let { articlesArr, articles, pageSize, defaultCurrent } = this.state;
+    let { articlesArr, articles, pageSize, domain, isSortTime, current} = this.state;
     let articleHTML = articlesArr.map((item, index) =>
       <li className='articleItem' key={index}>
         <p className='articleName'>
@@ -63,10 +78,11 @@ class List extends Component {
         </p>
         <p className='articleAuthor'>
           <Link to={ '/user/detail/' + item.author._id }>
+            <Avatar src={ domain + '/userAvatar/'+ (item.author.avatar ? item.author.avatar : 'user.a1f8e6e5.png') } />
             {item.author.userName}
             <span className={'iconfont icon-' + item.author.sex}></span>
           </Link>
-          <span className='articleTime'>{ moment(item.createTime).format('YYYY-MM-DD') }</span>
+          <span className='articleTime'>{ moment(item.createTime).format('YYYY-MM-DD HH:mm') }</span>
         </p>
       </li>
     )
@@ -74,14 +90,25 @@ class List extends Component {
       <div className='articleList'>
         <div className='public'>
           <div className='inner'>
-            <ul className='articleGroup'>
+            {
+              articles.length > 0 ?
+              <ul className='articleGroup'>
               {articleHTML}
-            </ul>
+              <span className='time-btn'>
+                <span 
+                  className={'icon-time iconfont' + (isSortTime ? ' on' : '')} 
+                  onClick={this.changeSortTime}>
+                </span>
+                {articles.length + '条'}
+              </span>
+            </ul> : '没有文章!'
+            }
             {
             articles.length > pageSize ?
             <Page arr={articles}
               pageSize={pageSize}
               onChange={this.onChange}
+              current={current}
             /> : ""
             }
           </div>

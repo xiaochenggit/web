@@ -1,5 +1,6 @@
 import React , { Component } from 'react';
 import { Link }from 'react-router-dom';
+import { Avatar } from 'antd';
 import $ from 'jquery';
 import './style.css'
 
@@ -12,7 +13,8 @@ class Article extends Component {
     super();
     this.state = {
       articleId: 0,
-      article: {}
+      article: {},
+      domain: 'http://localhost:80'
     }
   }
 
@@ -58,28 +60,30 @@ class Article extends Component {
   }
   render () {
 
-    let { article } = this.state;
+    let { article, domain } = this.state;
     let articleHTML = article.name ?　
-      <div className='inner'>
-        <h2 className='articleName'>{article.name}</h2>
-        <p>
+      <div className='article-box w-e-text'>
+        <h1 className='articleName'>{article.name}</h1>
+        <p className='articleDes'>
           <span className='articleAuthor'>
             <Link to={ '/user/detail/' + article.author._id }>
+              <Avatar src={ domain + '/userAvatar/'+ (article.author.avatar ? article.author.avatar : 'user.a1f8e6e5.png') } />
               {article.author.userName}
               <span className={ 'iconfont icon-' + article.author.sex }></span>
             </Link>
           </span>
-          <span className='articleCreateTime'>{ moment(article.createTime).format('YYYY-MM-DD') }</span>
-          <span className='articleUpdateTime'>{ moment(article.updateTime).format('YYYY-MM-DD') }</span>
+          <span className='articleUpdateTime'>更新时间：{ moment(article.updateTime).format('YYYY-MM-DD HH:mm') }</span>
         </p>
         <div className='articleContent' ref={ content => this.content = content}> 
         </div>
       </div>
-    : <div className='inner'>正在加载...</div>;
+    : '正在加载...';
     return (
       <div className='articleDetail'>
         <div className='public'>
-          { articleHTML }
+          <div className='inner'>
+            { articleHTML }
+          </div>
         </div>
       </div>
     )

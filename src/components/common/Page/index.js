@@ -6,13 +6,6 @@ import './style.css';
 class Page extends Component {
 	constructor() {
 		super();
-		/**
-		 * [state 数据]
-		 * @current {Number} 当前页
-		 */
-		this.state = {
-			current: 1
-		}
 	}
 	/**
 	 * 页面改变触发函数
@@ -20,22 +13,10 @@ class Page extends Component {
 	 * 修改页码  触发props.onchange (当前页数据)
 	 */
 	onChange = (current) => {
-  	this.setState({
-  		current
-  	});
-  	/**
-  	 * pageSize Number 页面显示条目
-  	 * arr Array 总数据
-  	 * newArr Array 当前页数据
-  	 * onChange Func 传递过来的触发函数(当前页数据)
-  	 */
-  	const { pageSize, arr, onChange } = this.props;
-  	let newArr = arr.slice(pageSize * (current - 1), pageSize * current);
-  	onChange(newArr);
+  	this.props.onChange(current);
 	}
 	render() {
-		const { pageSize, arr } = this.props;
-		const { current } = this.state;
+		const { pageSize, arr, current } = this.props;
 		return (
 				<div className='pageOwn'>
 					<Pagination 
