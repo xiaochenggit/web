@@ -7,7 +7,7 @@ let User = require("../models/user");
 const path = require('path');
 const fs = require('fs');
 const multipart = require('connect-multiparty');
-
+const URL = require('url');
 // 储存文章里的图片
 router.post('/images', multipart(), (req, res, next) => {
     let dataImage = req.files.articleImages;
@@ -129,8 +129,11 @@ router.post('/create', (req, res, next) => {
 
 // 获取文章列表
 router.get('/list', (req, res, next) => {
+	console.log(req.query);
+	let category = req.query.category;
   Article.find({})
   .populate({path: 'author', select: 'sex userName avatar'})
+  .populate({path: 'categories.category', select: 'name'})
   .exec((err, articles) => {
     if (err) {
       res.json({
@@ -154,12 +157,27 @@ router.post('/detail', (req, res, next) => {
 	if (_id) {
 		Article.findOne({ _id })
 		.populate({ path: 'author', select: 'userName sex avatar' })
+		.populate({ path: 'categories.category', select: 'name' })
 		.exec((err, article) => {
 			if (err) {
 				res.json({ status: 401,msg: err.message });
 			} else {
 				if (article) {
-					res.json({ status: 200,msg: '获取文章信息成功!',result: { article } })
+					let cookieUser = req.session.user;
+					if (cookieUser) { // 判断是否浏览过
+						article.browses.forEach((item, index) => {
+								if (item.user == cookieUser._id) {
+									article.browses.splice(index, 1);
+									return;
+								}
+						})
+						article.browses.unshift({ user: cookieUser._id, time: new Date().getTime() });
+						article.save((err, article) => {
+								res.json({ status: 200,msg: '获取文章信息成功!',result: { article } })
+						})
+					} else {
+						res.json({ status: 200,msg: '获取文章信息成功!',result: { article } })
+					}
 				} else {
 					res.json({ status: 201,msg: '文章已经不存在!'})
 				}
