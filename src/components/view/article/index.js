@@ -1,6 +1,6 @@
 import React , { Component } from 'react';
 import { Link }from 'react-router-dom';
-import { Avatar } from 'antd';
+import { Avatar, Button } from 'antd';
 import $ from 'jquery';
 import './style.css'
 
@@ -73,8 +73,21 @@ class Article extends Component {
             </Link>
           </span>
           <span className='articleUpdateTime'>更新时间：{ moment(article.updateTime).format('YYYY-MM-DD HH:mm') }</span>
+          <span className='browses iconfont icon-liulan'>{article.browses.length}</span>
         </p>
         <div className='articleContent' ref={ content => this.content = content}> 
+        </div>
+        <div className='categories'>
+          {
+            article.categories.map((elem, index) =>
+              <Button
+                type='primary'
+                key={index}
+                ghost>
+                {elem.category.name}
+              </Button>
+            )
+          }
         </div>
       </div>
     : '正在加载...';

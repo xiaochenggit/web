@@ -19,6 +19,7 @@ class App extends Component {
         <Router>
           <div className="main">
             <Header/>
+            <div className='main-box'>
             <Route exact path="/" component={Index}/>
             <Route exact path="/list" component={List}/>
             <Route exact path="/user/detail/:userId" component={UserDetail} />
@@ -26,6 +27,7 @@ class App extends Component {
             <Route exact path="/articlecategory/create" component={ArticleCategoryCreate}/>
             <Route exact path="/article/create" component={ArticleCreate}/>
             <Route exact path="/article/detail/:articleId" component={Article} />
+            </div>
             <FooterHTML />
           </div>
         </Router>

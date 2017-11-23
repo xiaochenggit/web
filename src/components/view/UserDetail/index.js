@@ -221,12 +221,19 @@ class UserDetail extends Component {
       <div className='userdetail'>
         <div className='public'>
           {/* 信息部分 */}
-          <div className='userInfoBox shadowBox'>
+          {
+            lookUser._id ? 
+            <div className='userInfoBox shadowBox'>
             <div className='userImgBg'></div>
             <div className='userInfo'>
               <div className='userInfoInner'>
                 <div className='userImg'>
-                  <img alt={lookUser.userName} src={domain + '/userAvatar/'+ (lookUser.avatar ? lookUser.avatar : 'user.a1f8e6e5.png') }></img>
+                  <img
+                   alt={lookUser.userName}
+                   src={domain + '/userAvatar/'+ (lookUser.avatar ?
+                    lookUser.avatar
+                    : 'user.a1f8e6e5.png') }>
+                  </img>
                 </div>
                 <div className='userDes'>
                   <h2>
@@ -253,6 +260,8 @@ class UserDetail extends Component {
               </div>
             </div>
           </div>
+          : '正在加载'
+          }
           <div className='userCommentAch'>
             <div className='userComments shadowBox'>
               <Card 

@@ -1,6 +1,6 @@
 import React , { Component } from 'react';
 import {Link} from 'react-router-dom';
-import { Avatar } from 'antd';
+import { Avatar, Button  } from 'antd';
 import $ from 'jquery';
 import './style.css';
 import Page from '../../common/Page/index';
@@ -30,9 +30,9 @@ class List extends Component {
   componentWillMount () {
     this.getArticleList();
   }
-
   // 获得文章列表
   getArticleList = () => {
+    console.log(this.props.location)
     $.ajax({
       url: '/api/article/list',
       success: (data) => {
@@ -83,6 +83,18 @@ class List extends Component {
             <span className={'iconfont icon-' + item.author.sex}></span>
           </Link>
           <span className='articleTime'>{ moment(item.createTime).format('YYYY-MM-DD HH:mm') }</span>
+          {/*文章类型*/}
+          {
+            item.categories.map((elem, index) =>
+              <Button
+                size={'small'}
+                type='primary'
+                key={index}
+                ghost>
+                {elem.category.name}
+              </Button>
+            )
+          }
         </p>
       </li>
     )

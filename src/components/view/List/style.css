@@ -32,9 +32,13 @@
 .articleGroup .articleAuthor {
     line-height: 32px;
 }
+.articleGroup .articleAuthor .ant-btn {
+   margin-right: 0.5rem;
+}
 .articleGroup .articleAuthor>span{
     margin: 0.5rem;
 }
 .articleGroup .articleDescribe {
-    font-size: 1.2rem;
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
 }

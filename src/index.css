@@ -1,5 +1,14 @@
-body {
+body,html {
+  min-height: 100%;
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+#root,
+.app,
+.main{
+  min-height: 100%;
+}
+.main-box{
+  height: calc(100% - 114px - 2rem);
 }

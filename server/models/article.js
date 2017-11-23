@@ -36,18 +36,30 @@ let articleSchema = new Schema({
 		user : {
 			type : ObjectId,
 			ref : 'User'
+		},
+		time : {
+			type : Number,
+			default: new Date().getTime()
 		}
 	}],
 	collections :[{
 		user : {
 			type : ObjectId,
 			ref : 'User'
+		},
+		time : {
+			type : Number,
+			default: new Date().getTime()
 		}
 	}],
     browses :[{
 		user : {
 			type : ObjectId,
 			ref : 'User'
+		},
+		time : {
+			type : Number,
+			default: new Date().getTime()
 		}
 	}],
     content : String,
