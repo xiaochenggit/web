@@ -28,8 +28,6 @@ class ArticleCategoryCreate extends Component {
           this.setState({
             articleCategories: data.result.articleCategories
           })
-        } else { // 错误就跳转到首页!
-          this.props.history.push('/')
         }
       }
     })

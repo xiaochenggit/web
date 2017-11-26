@@ -17,9 +17,37 @@ a:hover {
     margin: 1rem auto;
     background-color: #fff;
     border-radius: 0.2rem;
-    overflow: hidden;
 }
 .index .inner{
+    padding: 1rem;
+}
+.index .inner .indexAnchor{
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: -76px;
+    opacity: 0.6;
+    background: transparent;
+}
+.index .inner .indexAnchor .ant-anchor-ink:before {
+    background-color: #555;
+}
+.index .inner .indexAnchor .ant-anchor-ink-ball {
+    margin-top: 8px;
+}
+.index .inner .indexAnchor .ant-anchor-link-title-active {
+    color: #108ee9;
+}
+.indexAnchor .ant-anchor-link {
+    padding-left: 0.5rem;
+}
+.index .inner .articleCate {
+    margin-bottom: 1rem;
+}
+.index .inner .articleCate .ant-card-head {
+    padding: 0 1rem;
+}
+.index .inner .articleCate .ant-card-body {
     padding: 1rem;
 }
 /* userdetail */

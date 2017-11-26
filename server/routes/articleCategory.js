@@ -5,32 +5,35 @@ let ArticleCategory = require('../models/articleCategory');
 // 获得信息
 
 router.get('/list', (req, res, next) => {
-  let cookieUser = req.session.user;
-  if (cookieUser) {
-    ArticleCategory.find({}, (err, artCates) => {
-      if (err) {
-        res.json({
-          status: 401,
-          msg: err.message
-        })
-      } else {
-        res.json({
-          status: 200,
-          msg: '获得文章分类信息成功!',
-          result: {
-            articleCategories: artCates
-          }
-        })
-      }
-    })
-  } else {
-    res.json({
-      status: 201,
-      msg: '没有权限!'
-    })
-  }
-});
-
+  ArticleCategory.find({})
+  .populate({
+    path: 'articles.article',
+    select: 'author browses updateTime name describe categories',
+    populate: [{
+      path: 'author',
+      select: 'sex userName avatar'
+    },{
+      path: 'categories.category',
+      select: 'name'
+    }]
+  }).slice('articles', 5)
+  .exec((err, artCates) => {
+    if (err) {
+      res.json({
+        status: 401,
+        msg: err.message
+      })
+    } else {
+      res.json({
+        status: 200,
+        msg: '获得文章分类信息成功!',
+        result: {
+          articleCategories: artCates
+        }
+      })
+    }
+  })
+})
 // 创建分类
 router.post('/create', (req, res, next) => {
   let cookieUser = req.session.user;
