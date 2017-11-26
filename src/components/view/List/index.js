@@ -89,6 +89,7 @@ class List extends Component {
             <span className={'iconfont icon-' + item.author.sex}></span>
           </Link>
           <span className='articleTime'>{ moment(item.createTime).format('YYYY-MM-DD HH:mm') }</span>
+          <span className='browses iconfont icon-liulan'> { item.browses.length }</span>
           {/*文章类型*/}
           {
             item.categories.map((elem, index) =>
