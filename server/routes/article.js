@@ -129,11 +129,18 @@ router.post('/create', (req, res, next) => {
 
 // 获取文章列表
 router.get('/list', (req, res, next) => {
-	console.log(req.query);
 	let category = req.query.category;
-  Article.find({})
+	let author = req.query.author;
+	let parmas = {};
+	if (category) {
+		parmas['categories.category'] = category;
+	}
+	if (author) {
+		parmas['author'] = author;
+	}
+	Article.find(parmas)
   .populate({path: 'author', select: 'sex userName avatar'})
-  .populate({path: 'categories.category', select: 'name'})
+  .populate({path: 'categories.category', select: 'name _id'})
   .exec((err, articles) => {
     if (err) {
       res.json({
@@ -143,6 +150,7 @@ router.get('/list', (req, res, next) => {
     } else {
       res.json({
         status: 200,
+        msg: '获取文章列表成功!',
         result: {
           articles
         }
@@ -157,7 +165,7 @@ router.post('/detail', (req, res, next) => {
 	if (_id) {
 		Article.findOne({ _id })
 		.populate({ path: 'author', select: 'userName sex avatar' })
-		.populate({ path: 'categories.category', select: 'name' })
+		.populate({ path: 'categories.category', select: 'name _id' })
 		.exec((err, article) => {
 			if (err) {
 				res.json({ status: 401,msg: err.message });

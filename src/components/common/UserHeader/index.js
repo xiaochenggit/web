@@ -94,6 +94,9 @@ class UserHeader extends Component {
           <Link to={'/user/detail/' + user._id }>个人中心</Link>
         </Menu.Item>
         <Menu.Item>
+          <Link to={'/list?author=' + user._id }>你的文章</Link>
+        </Menu.Item>
+        <Menu.Item>
           <Link to={'/article/create'}>发布文章</Link>
         </Menu.Item>
         {

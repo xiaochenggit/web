@@ -58,8 +58,11 @@ class Article extends Component {
       this.content.innerHTML = this.state.article.content;
     }
   }
+  // 跳转到文章分类列表页面
+  goToCategory = (id) => {
+    this.props.history.push('/list?category=' + id);
+  }
   render () {
-
     let { article, domain } = this.state;
     let articleHTML = article.name ?　
       <div className='article-box w-e-text'>
@@ -73,7 +76,7 @@ class Article extends Component {
             </Link>
           </span>
           <span className='articleUpdateTime'>更新时间：{ moment(article.updateTime).format('YYYY-MM-DD HH:mm') }</span>
-          <span className='browses iconfont icon-liulan'>{article.browses.length}</span>
+          <span className='browses iconfont icon-liulan'> {article.browses.length}</span>
         </p>
         <div className='articleContent' ref={ content => this.content = content}> 
         </div>
@@ -83,6 +86,7 @@ class Article extends Component {
               <Button
                 type='primary'
                 key={index}
+                onClick={ () => this.goToCategory(elem.category._id)}
                 ghost>
                 {elem.category.name}
               </Button>

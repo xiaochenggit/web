@@ -28,13 +28,15 @@ class List extends Component {
   }
 
   componentWillMount () {
-    this.getArticleList();
+    this.getArticleList(this.props.location.search);
+  }
+  componentWillReceiveProps(nextProps) {
+    this.getArticleList(nextProps.location.search);
   }
   // 获得文章列表
-  getArticleList = () => {
-    console.log(this.props.location)
+  getArticleList = (search) => {
     $.ajax({
-      url: '/api/article/list',
+      url: '/api/article/list' + search,
       success: (data) => {
         if (data.status === 200) {
           let articles = data.result.articles.reverse();
@@ -64,6 +66,10 @@ class List extends Component {
       articlesArr: articles.slice(0, this.state.pageSize)
     })
   }
+  // 跳转到文章分类列表页面
+  goToCategory = (id) => {
+    this.props.history.push('/list?category=' + id);
+  }
   render () {
     let { articlesArr, articles, pageSize, domain, isSortTime, current} = this.state;
     let articleHTML = articlesArr.map((item, index) =>
@@ -90,6 +96,7 @@ class List extends Component {
                 size={'small'}
                 type='primary'
                 key={index}
+                onClick={() => this.goToCategory(elem.category._id)}
                 ghost>
                 {elem.category.name}
               </Button>
@@ -113,7 +120,13 @@ class List extends Component {
                 </span>
                 {articles.length + '条'}
               </span>
-            </ul> : '没有文章!'
+              </ul> : 
+              <div>
+                没有文章!
+                <Link to={'/'}>
+                  跳转到首页
+                </Link>
+              </div>
             }
             {
             articles.length > pageSize ?

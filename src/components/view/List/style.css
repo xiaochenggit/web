@@ -35,6 +35,9 @@
 .articleGroup .articleAuthor .ant-btn {
    margin-right: 0.5rem;
 }
+.articleGroup .articleAuthor .browses {
+    font-size: 12px;
+}
 .articleGroup .articleAuthor>span{
     margin: 0.5rem;
 }
