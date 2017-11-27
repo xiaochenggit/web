@@ -145,37 +145,37 @@ a:hover {
 .userdetail .userCommentList {
     margin-bottom: 1rem;
 }
-.userdetail .userCommentList .ant-card {
+.userCommentList .ant-card {
     margin-bottom: 1rem;
 }
-.userdetail .userCommentList .ant-card:not(.ant-card-no-hovering):hover {
+.userCommentList .ant-card:not(.ant-card-no-hovering):hover {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 }
-.userdetail .userCommentList .ant-card-body .content p{
+.userCommentList .ant-card-body .content p{
     position: relative;
 }
-.userdetail .userCommentList .ant-card-body .content p.one{
+.userCommentList .ant-card-body .content p.one{
     margin-bottom: 1rem;
 }
-.userdetail .userCommentList .ant-card.listOne .operation,
-.userdetail .userCommentList .ant-card.listTwo .operation{
+.userCommentList .ant-card.listOne .operation,
+.userCommentList .ant-card.listTwo .operation{
     position: absolute;
     right: 0rem;
     bottom: 0rem;
     display: none;
 }
-.userdetail .userCommentList .ant-card.listOne:hover .one>.operation,
-.userdetail .userCommentList .ant-card.listTwo:hover .two>.operation{
+.userCommentList .ant-card.listOne:hover .one>.operation,
+.userCommentList .ant-card.listTwo:hover .two>.operation{
     display: block;
 }
-.userdetail .userCommentList .ant-card-body .operation .iconfont {
+.userCommentList .ant-card-body .operation .iconfont {
     cursor: pointer;
     -webkit-transition: all 0.2s linear;
     -moz-transition: all 0.2s linear;
     transition: all 0.2s linear;
     margin: 0px 0.2rem;
 }
-.userdetail .userCommentList .ant-card-body .operation .iconfont:hover{
+.userCommentList .ant-card-body .operation .iconfont:hover{
     display: inline-block;
     transform: scale(1.2,1.2);
 }

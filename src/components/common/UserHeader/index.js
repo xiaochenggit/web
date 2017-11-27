@@ -42,7 +42,11 @@ class UserHeader extends Component {
       isLogin: true,
       user
     });
+    this.changeUser(user);
+  }
+  changeUser = (user) => {
     PubSub.publish('changeUser', user);
+    PubSub.publish('changeUserOpinion', user);
   }
   componentDidMount() {
     this.chekLogin();
@@ -63,7 +67,7 @@ class UserHeader extends Component {
       if (data.status === 200) {
         this.loginSuccess(data.result);
       } else {
-        PubSub.publish('changeUser', {});
+        this.changeUser({});
       }
     })
   }

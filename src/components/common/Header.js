@@ -49,6 +49,9 @@ class Header extends Component {
               <Menu.Item key="/list">
                 <Link to="/list">列表页面</Link>
               </Menu.Item>
+              <Menu.Item key="/opinion">
+                <Link to="/opinion">意见反馈</Link>
+              </Menu.Item>
             </Menu>
           </nav>
           <UserHeader />

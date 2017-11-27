@@ -59,8 +59,8 @@ class UserDetail extends Component {
         user
       })
     });
-    PubSub.publish('getUser');
     // 留言更新
+    PubSub.publish('getUser');
     this.timer = setInterval(()=> {
       this.getUserComments(this.state.lookUserId)
     }, 60000)
