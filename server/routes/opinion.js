@@ -3,10 +3,15 @@ let router = express.Router();
 let Opinion = require('../models/opinion');
 // 创建
 router.post('/create', (req, res, next) => {
+	/**
+	 * type {String} content 内容
+	 * type {Number} cId 主回复 id
+	 * type {Number} to 回复给谁 id
+	 */
 	let { content, cId, to } = req.body;
 	let cookieUser = req.session.user;
 	if (cookieUser) {
-		if (!cId) {
+		if (!cId) { // 一级回复
 			let opinion = {
 				content,
 				from: cookieUser._id,
@@ -27,7 +32,7 @@ router.post('/create', (req, res, next) => {
 					})
 				})
 			})
-		} else {
+		} else { // 二级回复
 			Opinion.findOne({_id: cId}, (err, opinion) => {
         if (err) {
           res.json({ status: 401, msg: err.message })
@@ -70,7 +75,14 @@ router.post('/create', (req, res, next) => {
 });
 // 获得列表
 router.get('/list', (req, res, next) => {
+	/**
+	 * page 页码
+	 * pageNum 页面条目
+	 */
+	let { page, pageNum } = req.query;
 	Opinion.find({})
+	.skip(parseInt(page) * parseInt(pageNum))
+	.limit(parseInt(pageNum))
 	.populate({path: 'from', select: 'userName sex avatar role'})
 	.populate({path: 'reply.from reply.to', select: 'userName sex avatar role'})
 	.sort({'createTime': -1})
@@ -91,6 +103,10 @@ router.get('/list', (req, res, next) => {
 router.post('/delete', (req, res, next) => {
 	let cookieUser = req.session.user;
 	if (cookieUser) {
+		/**
+		 * id 主回复 id
+		 * replyId 回复的 id 
+		 */
 		let { id, replyId } = req.body;
 		Opinion.findOne({_id: id}, (err, opinion) => {
 			if (err) {

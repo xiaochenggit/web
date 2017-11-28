@@ -211,7 +211,7 @@ router.post('/detail', (req, res, next) => {
           msg: '获得用户数据成功!',
           result: {
             user: user,
-            isSelf: user._id == req.session.user._id
+            isSelf: !req.session.user ? false : req.session.user._id == user._id
           }
         })
       } else {

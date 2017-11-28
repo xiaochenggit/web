@@ -8,15 +8,27 @@ import './style.css';
 require('moment/locale/zh-cn');
 let moment = require('moment');
 const confirm = Modal.confirm;
-
+let isAjax = false; // 是否处于请求状态
 class Opinion extends Component {
 	constructor () {
 		super();
+		/**
+		 * @type {Object} user 用戶對象
+		 * @type {Array} opinions 意见数组
+		 * @type {String} domain 服务器地址
+		 * @type {Number} formIndex 回复表单位置 默认为-1
+		 * @type {Number} page 页码
+		 * @type {Number} pageNum 每页的数据条数
+		 * @type {Boolean} isGetOpinion 是否还可以多加载意见 默认true
+		 */
 		this.state = {
 			user: {},
 			opinions: [],
 			domain: 'http://localhost:80',
-			formIndex: -1
+			formIndex: -1,
+			page: 0,
+			pageNum: 5,
+			isGetOpinion: true
 		}
 	}
 	componentWillMount () {
@@ -27,49 +39,88 @@ class Opinion extends Component {
       })
     });
     PubSub.publish('getUser');
-    this.getOpinions();
+    let { page, pageNum} = this.state;
+    this.getOpinions(page, pageNum);
 	}
-	// 获得 options 列表
-	getOpinions = () => {
+	componentDidMount () {
+		// 绑定滚动事件
+		let that = this;
+		$(function(){
+			$(window).bind('scroll',function () {
+	      let { page, isGetOpinion, pageNum } = that.state;
+	      const $this = $(this);
+	      let nDivHight = $this.height();
+				let nScrollHight = $(document.body).outerHeight(true);
+	      let nScrollTop = $this.scrollTop();
+	    	// 判断到底&&可以加载数据 && 此时没有请求数据状态
+	      if(nScrollTop + nDivHight >= nScrollHight - 100 && isGetOpinion && !isAjax) {
+	        that.getOpinions(page + 1, pageNum);
+	      }
+	    })
+		})
+	}
+	/**
+	 * 请求数据 意见数据
+	 * @param  {Number} page    [页码]
+	 * @param  {Number} pageNum [条目]
+	 */
+	getOpinions = (page, pageNum) => {
+		isAjax = true;
+		let { opinions } = this.state;
 		$.ajax({
 			url: '/api/opinion/list',
 			type: 'GET',
+			data: { page, pageNum },
 			success: (data) => {
 				if (data.status == 200) {
+					// 成功之后添加数据 判断是否还可以请求数据
+					let newOpinions = data.result.opinions;
+					opinions = opinions.concat(newOpinions) 
 					this.setState({
-						opinions: data.result.opinions
+						opinions: opinions,
+						isGetOpinion: newOpinions.length == pageNum,
+						page
 					});
 				}
+				isAjax = false;
 			}
 		})
 	}
-	componentWillUnmount () {
-    PubSub.unsubscribe('changeUserOpinion');
-  }
+  /**
+   * [触发登录]
+   */
   Login = () => {
   	PubSub.publish('userLogin');
   }
-  // 回复成功之后的数组操作
+  /**
+   * [回复成功之后的操作]
+   * @param  {Striing} cId     [二级回复会有值，一级回复没有值]
+   * @param  {Object} opinion [此条留言数据]
+   */
   opinionCreateSuccess = (cId, opinion) => {
   	let { opinions, formIndex } = this.state;
   	if (!cId) { // 如果是一级
   		opinions.unshift(opinion);
-	  	this.setState({
-	  		opinions
-	  	})
   	} else { // 如果是二级
   		opinions.splice(formIndex, 1, opinion);
-	  	this.setState({
-	  		opinions
-	  	})
   	}
+  	this.setState({
+  		opinions
+  	})
   }
-  // 添加回复form 表单
+  /**
+   * 添加回复表单
+   * @param  {Number} opinionId [一级回复id]
+   * @param  {Number} toId      [回复给谁 id]
+   * @param  {Number} index     [数组下标]
+   */
   getToComment = (opinionId, toId, index) => {
   	let { opinions, formIndex } = this.state;
-  	if (formIndex !== -1) { // 存在的时候 先删除 后添加
+  	// 默认为 -1 的时候不存在回复表单 所以就不删除了
+  	if (formIndex !== -1) { 
   		delete opinions[formIndex]['form']
   	}
+  	// 数据信息修改 此条信息里面添加表单信息
   	opinions[index]['form']  = {
   		opinionId,
   		toId
@@ -79,7 +130,12 @@ class Opinion extends Component {
   		opinions
   	})
   }
-  // 确认删除
+  /**
+   * 是否删除留言选择框
+   * @param  {Number} id      [一级 id]
+   * @param  {Number} replyId [二级 id]
+   * @return {[type]}         [description]
+   */
   showConfirm = (id, replyId) => {
     let that = this;
     confirm({
@@ -89,7 +145,12 @@ class Opinion extends Component {
       }
     });
   }
-  // 删除留言
+  /**
+   * 删除请求
+   * @param  {Number} id      [一级 id]
+   * @param  {Number} replyId [二级 id]
+   * @return {[type]}         [description]
+   */
   deleteOpinion = (id, replyId) => {
     $.ajax({
       url: '/api/opinion/delete',
@@ -105,7 +166,12 @@ class Opinion extends Component {
       }
     })
   }
-  // 删除留言成功之后 的数组操作
+  /**
+   * 删除成功之后的操作
+   * @param  {Number} id      [一级 id]
+   * @param  {Number} replyId [二级 id]
+   * @return {[type]}         [description]
+   */
   catdeleteOpinion = (id, replyId) => {
   	let { opinions } = this.state;
   	if (!replyId) { // 删除一级留言
@@ -130,6 +196,10 @@ class Opinion extends Component {
   	this.setState({
   		opinions
   	});
+  }
+  componentWillUnmount () {
+    PubSub.unsubscribe('changeUserOpinion');
+    $(window).unbind('scroll');
   }
 	render () {
 		let { user, opinions, domain } = this.state;
