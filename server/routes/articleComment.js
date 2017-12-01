@@ -18,7 +18,7 @@ router.get('/list', (req, res, next) => {
 		if (err) {
 			res.json({ status: 401, msg: err.message });
 		} else {
-			res.json({ status: 200, msg: '获得意见列表成功!',
+			res.json({ status: 200, msg: '获得文章留言列表成功!',
 				result: {
 					opinions
 				}
@@ -51,7 +51,7 @@ router.post('/create', (req, res, next) => {
 					(err, opinion) => {
 					res.json({
 						status: 200,
-						msg: '创建意见反馈成功!',
+						msg: '创建文章评论成功!',
 						result: {
 							opinion 
 						}
@@ -79,7 +79,7 @@ router.post('/create', (req, res, next) => {
 								(err, opinion) => {
 								res.json({
 									status: 200,
-									msg: '创建意见反馈成功!',
+									msg: '创建文章评论成功!',
 									result: {
 										opinion 
 									}
@@ -87,16 +87,57 @@ router.post('/create', (req, res, next) => {
 							});
             });
           } else {
-            res.json({ status: 201, msg: '留言已经删除' })
+            res.json({ status: 201, msg: '文章评论已删除!' })
           }
         }
       })
 		}
 	} else {
-		res.json({
-			status: 201,
-			msg: '请先登录！'
+		res.json({ status: 201, msg: '请先登录！' })
+	}
+});
+// 删除
+router.post('/delete', (req, res, next) => {
+	let cookieUser = req.session.user;
+	if (cookieUser) {
+		/**
+		 * id 主回复 id
+		 * replyId 回复的 id 
+		 */
+		let { id, replyId } = req.body;
+		ArticleComment.findOne({_id: id}, (err, opinion) => {
+			if (err) {
+				res.json({ status: 401, msg: err.message });
+			} else {
+				if (opinion) { // 是否存在
+					if (!replyId) { // 一级
+						if (cookieUser.role >= 10 || opinion.from == cookieUser._id) { // 权限判断
+							ArticleComment.remove({_id: id}, () => {
+								res.json({ status: 200, msg: '删除留言成功!'})
+							})
+						} else {
+							res.json({ status: 201, msg: '你没有权限删除此留言!'})
+						}
+					} else { // 二级
+						opinion.reply.forEach((item, index) => { // 找到二级
+							if (item._id == replyId) {
+								if (cookieUser.role >= 10 || item.from == cookieUser._id) { // 判断权限
+									opinion.reply.splice(index, 1);
+								}
+								return false;
+							}
+						});
+						opinion.save(() => {
+							res.json({ status: 200, msg: '删除留言成功!'})
+						})
+					}
+				} else {
+					res.json({ status: 200, msg: '留言已经删除!' });
+				}
+			}
 		})
+	} else {
+		res.json({ status: 201, msg: '请先登录!' });
 	}
 });
 module.exports = router;
