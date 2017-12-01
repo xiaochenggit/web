@@ -1,0 +1,12 @@
+.msgComment .msgForm{
+	margin: 0.5rem 0;
+}
+.msgComment .ant-card-head {
+    padding: 0 1rem;
+}
+.msgComment .ant-card-body{
+    padding: 1rem;
+}
+.msgComment .opinionList {
+	margin-top: 1rem;
+}

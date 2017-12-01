@@ -47,6 +47,7 @@ class UserHeader extends Component {
   changeUser = (user) => {
     PubSub.publish('changeUser', user);
     PubSub.publish('changeUserOpinion', user);
+    PubSub.publish('changeUserArticle', user);
   }
   componentDidMount() {
     this.chekLogin();
@@ -78,11 +79,11 @@ class UserHeader extends Component {
       credentials: "include"
     }).then(res => res.json()).then(data => {
       if (data.status === 200) {
+        this.changeUser({});
         this.setState({
           isLogin: false,
           user: ''
         });
-        PubSub.publish('changeUser', {});
       }
     })
   }
