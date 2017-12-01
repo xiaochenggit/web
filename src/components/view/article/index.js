@@ -1,4 +1,6 @@
 import React , { Component } from 'react';
+import MsgComment from '../../common/msgComment/';
+import PubSub from 'pubsub-js';
 import { Link }from 'react-router-dom';
 import { Avatar, Button } from 'antd';
 import $ from 'jquery';
@@ -9,43 +11,49 @@ let moment = require('moment');
 
 class Article extends Component {
 
-  constructor () {
-    super();
+  constructor (props) {
+    super(props);
+    /**
+     * @type {String} domain 服务器地址
+     * @type {Number} articleId 访问文章的id
+     * @type {Object} articleId 文章对象
+     * @type {Object} 用户属性
+     */
     this.state = {
-      articleId: 0,
+      articleId: this.props.match.params.articleId,
       article: {},
-      domain: 'http://localhost:80'
+      domain: 'http://localhost:80',
+      user: {},
     }
   }
 
   componentWillMount () {
-    // 获得路由 articleId
-    let articleId = this.props.match.params.articleId;
-    this.init(articleId);
-  }
-
-  // 初始化
-  init = (articleId) => {
-    this.setState({
-      articleId
+    PubSub.subscribe("changeUserArticle", ( msg, user ) => {
+      this.setState({
+        user
+      })
     });
-    this.getArticleInfo(articleId);
+    PubSub.publish('getUser');
+    this.getArticleInfo();
   }
 
-  // 获得文章信息
-  getArticleInfo = (_id) => {
+  /**
+   * 获取文章信息
+   */
+  getArticleInfo = () => {
+    let { articleId } = this.state;
     $.ajax({
       url: '/api/article/detail',
       type: 'POST',
       data: {
-        _id
+        _id: articleId
       },
       success: (data) => {
         if (data.status === 200) {
           this.setState({
             article: data.result.article
           })
-        } else {
+        } else { // 获取不到跳转到首页
           this.props.history.push('/')
         }
       }
@@ -58,12 +66,18 @@ class Article extends Component {
       this.content.innerHTML = this.state.article.content;
     }
   }
-  // 跳转到文章分类列表页面
+  /**
+   * 跳转到文章分类页面
+   * @param  {Number} id [文章分类 id]
+   */
   goToCategory = (id) => {
     this.props.history.push('/list?category=' + id);
   }
+  componentWillUnmount () {
+    PubSub.unsubscribe('changeUserArticle');
+  }
   render () {
-    let { article, domain } = this.state;
+    let { article, domain, user, articleId } = this.state;
     let articleHTML = article.name ?　
       <div className='article-box w-e-text'>
         <h1 className='articleName'>{article.name}</h1>
@@ -100,6 +114,22 @@ class Article extends Component {
         <div className='public'>
           <div className='inner'>
             { articleHTML }
+          </div>
+          <div className='article-rel'>
+            <div className='article-rel-left'>
+              <MsgComment 
+                user={user}
+                typeId={articleId}
+                createURL={'/api/articlecomment/create'}
+                listURL={'/api/articlecomment/list'}
+                deleteURL={'/api/articlecomment/delete'}
+                page={0}
+                pageNum={5}
+              />
+            </div>
+            <div className='article-rel-right'>
+              相关
+            </div>
           </div>
         </div>
       </div>

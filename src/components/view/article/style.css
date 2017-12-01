@@ -33,3 +33,15 @@
 .article-box .categories .ant-btn{
 	margin-right: 0.5rem;
 }
+.article-rel {
+	display: flex;
+}
+.article-rel .article-rel-left {
+	flex: 1;
+	padding: 1rem;
+}
+.article-rel .article-rel-right {
+	flex: 0 300px;
+	margin-left: 1rem;
+	padding: 1rem;
+}
