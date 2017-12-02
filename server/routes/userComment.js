@@ -108,13 +108,16 @@ router.post('/delete', (req, res, next) => {
      * replyId 回复的 id 
      */
     let { id, replyId } = req.body;
-    UserComment.findOne({_id: id}, (err, opinion) => {
+    UserComment.findOne({_id: id})
+    .exec((err, opinion) => {
       if (err) {
         res.json({ status: 401, msg: err.message });
       } else {
         if (opinion) { // 是否存在
           if (!replyId) { // 一级
-            if (cookieUser.role >= 10 || opinion.from == cookieUser._id) { // 权限判断
+            if (cookieUser.role >= 10 ||
+            opinion.from == cookieUser._id ||
+            opinion.user == cookieUser._id) { // 权限判断
               UserComment.remove({_id: id}, () => {
                 res.json({ status: 200, msg: '删除留言成功!'})
               })
@@ -122,17 +125,25 @@ router.post('/delete', (req, res, next) => {
               res.json({ status: 201, msg: '你没有权限删除此留言!'})
             }
           } else { // 二级
+            let isDelete = false;
             opinion.reply.forEach((item, index) => { // 找到二级
               if (item._id == replyId) {
-                if (cookieUser.role >= 10 || item.from == cookieUser._id) { // 判断权限
+                if (cookieUser.role >= 10 ||
+                item.from == cookieUser._id ||
+                opinion.user == cookieUser._id) { // 判断权限
                   opinion.reply.splice(index, 1);
+                  isDelete = true;
                 }
                 return false;
               }
             });
-            opinion.save(() => {
-              res.json({ status: 200, msg: '删除留言成功!'})
-            })
+            if (isDelete) {
+              opinion.save(() => {
+                res.json({ status: 200, msg: '删除留言成功!'})
+              })
+            } else {
+              res.json({ status: 201, msg: '你没有权限删除此留言!'})
+            }
           }
         } else {
           res.json({ status: 200, msg: '留言已经删除!' });

@@ -190,7 +190,7 @@ class MsgComment extends Component {
     $(window).unbind('scroll');
   }
 	render() {
-		let { user, typeId, createURL } = this.props;
+		let { user, typeId, createURL, canDelete } = this.props;
 		let { comments, domain } = this.state;
 		let msgFormHTML = user._id ? 
 		<MsgForm
@@ -224,7 +224,7 @@ class MsgComment extends Component {
 	            }
 	            {/* 判断权限 */}
 	            {
-	              user._id === item.from._id || user.role > 0 ?
+	              user._id === item.from._id || user.role > 0 || canDelete ?
 	              <span className='iconfont icon-shanchu' onClick={() => this.showConfirm(item._id)}></span>
 	              : ''
 	            }
@@ -261,7 +261,7 @@ class MsgComment extends Component {
 		              }
 		              {/* 判断权限 */}
 		              {
-		                user._id === cont.from._id || user.role > 0 ?
+		                user._id === cont.from._id || user.role > 0 || canDelete ?
 		                <span className='iconfont icon-shanchu' 
 		                  onClick={() => this.showConfirm(item._id, cont._id)}>
 		                </span>

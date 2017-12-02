@@ -12,7 +12,6 @@ class UserDetail extends Component {
     /**
      * {String} lookUserId 被浏览用户id
      * {Oject} lookUser 被浏览用户信息
-     * {Boolean} isSelf 是否是自己浏览自己
      * {Array} follows 用户粉丝数组
      * {Array} cares 用户关注者数组
      */
@@ -20,7 +19,6 @@ class UserDetail extends Component {
       lookUserId: this.props.match.params.userId,
       lookUser: {},
       user: {},
-      isSelf: false,
       follows: [],
       cares: [],
       domain: 'http://localhost:80'
@@ -90,8 +88,7 @@ class UserDetail extends Component {
       success: (data) => {
         if (data.status === 200) {
           this.setState({
-            lookUser: data.result.user,
-            isSelf: data.result.isSelf
+            lookUser: data.result.user
           })
         } else {
           this.props.history.push('/')
@@ -189,6 +186,7 @@ class UserDetail extends Component {
                   createURL={'/api/usercomment/create'}
                   listURL={'/api/usercomment/list'}
                   deleteURL={'/api/usercomment/delete'}
+                  canDelete={user._id === lookUser._id}
                   page={0}
                   pageNum={5}
                 />

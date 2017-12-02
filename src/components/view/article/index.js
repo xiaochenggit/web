@@ -123,6 +123,7 @@ class Article extends Component {
                 createURL={'/api/articlecomment/create'}
                 listURL={'/api/articlecomment/list'}
                 deleteURL={'/api/articlecomment/delete'}
+                canDelete={article.author ? article.author._id === user._id : false}
                 page={0}
                 pageNum={5}
               />
