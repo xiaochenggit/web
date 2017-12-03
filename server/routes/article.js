@@ -166,6 +166,8 @@ router.post('/detail', (req, res, next) => {
 		Article.findOne({ _id })
 		.populate({ path: 'author', select: 'userName sex avatar' })
 		.populate({ path: 'categories.category', select: 'name _id' })
+		.populate({ path: 'browses.user', select: 'userName sex avatar' })
+		.populate({ path: 'likes.user', select: 'userName sex avatar' })
 		.exec((err, article) => {
 			if (err) {
 				res.json({ status: 401,msg: err.message });
@@ -174,14 +176,23 @@ router.post('/detail', (req, res, next) => {
 					let cookieUser = req.session.user;
 					if (cookieUser) { // 判断是否浏览过
 						article.browses.forEach((item, index) => {
-								if (item.user == cookieUser._id) {
+								if (item.user._id == cookieUser._id) {
 									article.browses.splice(index, 1);
 									return;
 								}
 						})
 						article.browses.unshift({ user: cookieUser._id, time: new Date().getTime() });
 						article.save((err, article) => {
-								res.json({ status: 200,msg: '获取文章信息成功!',result: { article } })
+							article.populate({ 
+								path: 'browses.user',
+								select: 'userName sex avatar'
+							}, (err,article) => {
+								res.json({
+									status: 200,
+									msg: '获取文章信息成功!',
+									result: { article }
+								})
+							})
 						})
 					} else {
 						res.json({ status: 200,msg: '获取文章信息成功!',result: { article } })

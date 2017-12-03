@@ -1,12 +1,12 @@
 .articleDetail .public {
     margin: 1rem auto;
-    background-color: #fff;
     overflow: hidden;
-    min-height: 40rem;
-    border-radius: 0.2rem;
 }
-.articleDetail .inner {
+.articleDetail .inner .article-box {
 	padding: 1rem;
+	background-color: #fff;
+	border-radius: 0.2rem;
+	margin-bottom: 1rem;
 }
 .article-box.w-e-text {
 	overflow: hidden;
@@ -39,9 +39,13 @@
 .article-rel .article-rel-left {
 	flex: 1;
 	padding: 1rem;
+	border-radius: 0.2rem;
+	background-color: #fff;
 }
 .article-rel .article-rel-right {
 	flex: 0 300px;
 	margin-left: 1rem;
 	padding: 1rem;
+	border-radius: 0.2rem;
+	background-color: #fff;
 }

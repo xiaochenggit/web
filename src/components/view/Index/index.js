@@ -91,7 +91,7 @@ class Index extends Component {
               </li>
             </ul>
           )
-        : '暂无数据'}
+        : '该分类暂无文章'}
       </Card>
     )
     : '正在加载...'

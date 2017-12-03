@@ -1,7 +1,7 @@
 import React , { Component } from 'react';
 import MsgComment from '../../common/msgComment/';
-import FollowsCares from './FollowsCares';
 import ChangeUser from './ChangeUser';
+import LoadModel from '../../common/loadModel/';
 import { Button, Card  } from 'antd';
 import $ from 'jquery';
 import PubSub from 'pubsub-js';
@@ -19,14 +19,11 @@ class UserDetail extends Component {
       lookUserId: this.props.match.params.userId,
       lookUser: {},
       user: {},
-      follows: [],
-      cares: [],
       domain: 'http://localhost:80'
     }
   } 
   componentWillReceiveProps(nextProps) {
     this.getDetail(nextProps.match.params.userId);
-    this.getCare(nextProps.match.params.userId);
     this.setState({
       lookUserId: nextProps.match.params.userId
     });
@@ -34,13 +31,12 @@ class UserDetail extends Component {
   componentWillMount () {
     let { lookUserId } = this.state;
     this.getDetail(lookUserId);
-    this.getCare(lookUserId);
     // 监控 用户的登录状态!
     PubSub.subscribe("changeUser", ( msg, user ) => {
       this.setState({
         user
       })
-    });
+    }); 
     // 留言更新
     PubSub.publish('getUser');
   }
@@ -48,25 +44,11 @@ class UserDetail extends Component {
   Login = () => {
     PubSub.publish('userLogin');
   }
-  // 获得关注(被关注)信息.
-  getCare = (lookUserId) => {
-    $.ajax({
-      type: 'POST',
-      url: '/api/users/getcare',
-      data: {
-        _id: lookUserId
-      },
-      success: (data) => {
-        if (data.status === 200) {
-          this.setState({
-            follows: data.result.follows,
-            cares: data.result.cares
-          })
-        }
-      }
-    })
-  }
-  // 关注者中是否包含 该用户!
+  /**
+   * 是否关注
+   * @param  {Array} follows 关注者数组
+   * @param  {Number} userId  用户id
+   */
   getIsCare = (follows, userId) => {
     let isCare = false;
     follows.forEach((item) => {
@@ -77,7 +59,11 @@ class UserDetail extends Component {
     });
     return isCare;
   }
-  // 获得用户信息
+  /**
+   * 获得观看用户的信息 成功之后赋值，失败跳转到首页。
+   * @param  {Nmuber} lookUserId 用户id
+   * @return {[type]}            [description]
+   */
   getDetail = (lookUserId) => {
     $.ajax({
       type: 'POST',
@@ -112,7 +98,7 @@ class UserDetail extends Component {
       data: { type, _id},
       success: (data) => {
         if (data.status === 200) {
-          this.getCare(lookUserId);
+          this.getDetail(lookUserId);
         }
       }
     })
@@ -124,10 +110,10 @@ class UserDetail extends Component {
   }
   componentWillUnmount () {
     PubSub.unsubscribe('changeUser');
-    this.timer && clearInterval(this.timer);
   }
   render () {
-    const { lookUser, lookUserId, user, follows, cares, domain} = this.state;
+    const { lookUser, lookUserId, user, domain} = this.state;
+    let { follows , cares } = lookUser;
     return (
       <div className='userdetail'>
         <div className='public'>
@@ -163,7 +149,7 @@ class UserDetail extends Component {
                     {
                       lookUserId === user._id ? 
                       <ChangeUser user={lookUser} changeInfo={this.changeInfo}/> : 
-                      this.getIsCare(follows, user._id) ? 
+                      this.getIsCare(lookUser.follows, user._id) ? 
                       <Button type="dashed" onClick={()=>this.care(lookUser._id, 'cancel')}>已关注</Button> : 
                       <Button type="primary" onClick={()=>this.care(lookUser._id, 'add')}>关注他</Button> }
                   </div>
@@ -194,7 +180,28 @@ class UserDetail extends Component {
             </div>
             <div className='userAch shadowBox'>
               <Card title="个人成就" bordered={false} style={{ width: '100%' }}>
-                <FollowsCares cares={cares} follows={follows}/>
+                <div className='followsCares'>
+                  <div className='left'>
+                    <p className='name'>关注了</p>
+                    {
+                      cares ?
+                      <LoadModel
+                        title={"关注了"}
+                        arr={cares}
+                      /> : ''
+                    }
+                  </div>
+                  <div className='right'>
+                    <p className='name'>关注者</p>
+                    {
+                      follows ? 
+                      <LoadModel
+                        title={"关注者"}
+                        arr={follows}
+                      /> : ''
+                    }
+                  </div>
+                </div>
               </Card>
             </div>
           </div>

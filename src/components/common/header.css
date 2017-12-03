@@ -39,8 +39,7 @@
     border-bottom: none;
 }
 .ant-avatar {
-    vertical-align: top;
-    margin-top: 8px;
+    vertical-align: middle;
     margin-right: 0.2rem;
 }
 .login-form .ant-btn-primary,

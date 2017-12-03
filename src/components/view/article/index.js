@@ -1,5 +1,6 @@
 import React , { Component } from 'react';
 import MsgComment from '../../common/msgComment/';
+import LoadModel from '../../common/loadModel/';
 import PubSub from 'pubsub-js';
 import { Link }from 'react-router-dom';
 import { Avatar, Button } from 'antd';
@@ -78,6 +79,7 @@ class Article extends Component {
   }
   render () {
     let { article, domain, user, articleId } = this.state;
+    let { likes, browses } = article;
     let articleHTML = article.name ?　
       <div className='article-box w-e-text'>
         <h1 className='articleName'>{article.name}</h1>
@@ -90,7 +92,6 @@ class Article extends Component {
             </Link>
           </span>
           <span className='articleUpdateTime'>更新时间：{ moment(article.updateTime).format('YYYY-MM-DD HH:mm') }</span>
-          <span className='browses iconfont icon-liulan'> {article.browses.length}</span>
         </p>
         <div className='articleContent' ref={ content => this.content = content}> 
         </div>
@@ -129,7 +130,30 @@ class Article extends Component {
               />
             </div>
             <div className='article-rel-right'>
-              相关
+              <div className='followsCares'>
+                <div className='left'>
+                  <p className='name'>浏览</p>
+                  {
+                    browses ?
+                    <LoadModel
+                      title={"浏览"}
+                      arr={browses}
+                      id={'articleBrowses'}
+                    /> : ''
+                  }
+                </div>
+                <div className='right'>
+                  <p className='name'>喜欢</p>
+                  {
+                    likes ? 
+                    <LoadModel
+                      title={"喜欢"}
+                      arr={likes}
+                      id={'articleLikes'}
+                    /> : ''
+                  }
+                </div>
+              </div>
             </div>
           </div>
         </div>

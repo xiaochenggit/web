@@ -185,29 +185,29 @@ a:hover {
 .userdetail .commentForm .to{
     margin-bottom: 1rem;
 }
-.userdetail .followsCares {
+.followsCares {
     display: flex;
 }
-.userdetail .followsCares > div{
+.followsCares > div{
     flex: 1;
     text-align: center;
     line-height: 1.6rem;
     cursor: pointer;
     padding: 0.4rem 0;
 }
-.userdetail .followsCares > div .name {
+.followsCares > div .name {
     color: #8590a6;
     font-size: 1rem;
 }
-.userdetail .followsCares > div .number {
+.followsCares > div .number {
     color: #000;
     font-size: 1.2rem;
 }
-.userdetail .followsCares > div:hover .name,
-.userdetail .followsCares > div:hover .number {
+.followsCares > div:hover .name,
+.followsCares > div:hover .number {
     color: #175199;
 }
-.userdetail .followsCares > div:first-child {
+.followsCares > div:first-child {
     border-right: 1px solid #f0f2f7;
 }
 /* userList */
