@@ -18,6 +18,8 @@ var articleCategory = require('./routes/articleCategory');
 var article = require('./routes/article');
 var opinion = require('./routes/opinion');
 var articleComment = require('./routes/articleComment');
+var project = require('./routes/project');
+var projectComment = require('./routes/projectComment');
 var app = express();
 
 // view engine setup
@@ -70,6 +72,8 @@ app.use('/api/articlecategory', articleCategory);
 app.use('/api/article', article);
 app.use('/api/opinion', opinion);
 app.use('/api/articlecomment', articleComment);
+app.use('/api/project', project);
+app.use('/api/projectcomment', projectComment);
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
 //   var err = new Error('Not Found');

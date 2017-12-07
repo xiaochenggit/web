@@ -8,9 +8,38 @@ body {
 a {
     color: #000;
 }
-
+input {
+    border:none;
+    outline: none;
+}
 a:hover {
     color: #49a9ee;
+}
+.btn {
+    background: none;
+    border: none;
+    line-height: 100%;
+    padding: 0px 15px;
+    border-radius: 4px;
+    line-height: 36px;
+    cursor: pointer;
+    display: inline-block;
+}
+.btn-small {
+    line-height: 30px;
+    padding: 0 12px;
+}
+.btn-xs {
+    line-height: 24px;
+    padding: 0 12px;
+    font-size: 12px;
+}
+.btn-primary {
+    background-color: #4bd083;
+    color: #fff;
+}
+.btn-primary:hover{
+    background-color: #31da77;
 }
 /* index */ 
 .index .public {

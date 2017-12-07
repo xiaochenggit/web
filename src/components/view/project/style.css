@@ -1,0 +1,211 @@
+/* 我的项目 project-market */
+.project-market{
+    padding: 1rem;
+    margin:1rem 0;
+    background-color: #fff;
+    border-radius: 0.2rem;
+}
+.project-market .project-theme {
+    clear: both;
+    margin: 8px 0 26px 0;
+}
+.project-market .project-theme p{
+    display: inline-block;
+    margin-left: 12px;
+}
+.project-market-top {
+    padding: 6px 0;
+    display: flex;
+    line-height: 40px;
+}
+.project-market-top .user-img{
+    flex: 0 40px;
+    margin-right: 14px;
+}
+.project-market-top .user-img img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+}
+.project-market-top .project-message {
+    flex: 1;
+    font-size: 14px;
+    line-height: 20px;
+}
+.project-market-top .project-message .time{
+    color: #8a8a8a;
+}
+.project-market-top .project-operation {
+    position: relative;
+}
+.project-market-top .project-operation .project-oper{
+    position: absolute;
+    z-index: 99;
+    color: #585858;
+    font-size: 14px;
+    line-height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px 16px;
+    width: 100px;
+    right: 0px;
+    top: 40px;
+}
+.project-market-top .project-operation .project-oper{
+    display: none;
+    transition: all 0.5s;
+}
+.project-market-top .project-operation .project-oper.on{
+    display: block;
+}
+.project-market-top .project-operation .project-oper li {
+    cursor: pointer;
+    width: 100%;
+}
+.project-market .project-des {
+    font-size: 18px;
+    line-height: 24px;
+    border-bottom: 1px solid #ccc;
+}
+.project-market .project-des span{
+    font-size: 12px;
+}
+.project-market .project-des span.money{
+    font-size: 14px;
+    margin-right: 4px;
+}
+.project-market .project-des dl{
+    line-height: 24px;
+    margin-bottom: 14px;
+    overflow: hidden;
+}
+.project-market .project-des dt {
+    color: #8a8a8a;
+}
+.project-market .project-des dt,
+.project-market .project-des dd {
+    float: left;
+}
+.project-market .project-des dd {
+    margin-right: 28px;
+}
+.project-market .project-budget {
+    color: #4bd083;
+}
+.project-market .project-intr {
+    color: #8a8a8a;
+    padding: 26px 0;
+}
+.project-market .project-dialogue {
+    padding: 14px 16px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    line-height: 34px;
+    font-size: 12px;
+}
+.project-market .project-dialogue li {
+    display: flex;
+}
+.project-market .project-dialogue .user {
+    flex: 0 76px;
+    max-width: 76px;
+    margin-right: 0px;
+}
+.project-market .project-dialogue .project-dialogue-message {
+    flex: 1;
+}
+.project-market .project-dialogue .user .name {
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #515151;
+}
+.project-market .project-dialogue .user-avator{
+    width:40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+    display: block;
+}
+.project-market .project-dialogue .project-dialogue-mes {
+    background-color: #4bd083;
+    color: #fff;
+    display: inline-block;
+    padding: 5px 28px;
+    border-radius: 4px;
+    margin: 3px 0px;
+    line-height: 24px;
+    position: relative;
+}
+/* 左三角 */
+.project-market .project-dialogue .project-dialogue-mes::after{
+    content: '';
+    width:0; 
+    height:0; 
+    border-top:8px solid transparent;
+    border-bottom:8px solid transparent; 
+    border-right:15px solid #4bd083; 
+    position: absolute;
+    left: -8px;
+    top: 8px;
+}
+.project-market .project-dialogue .project-dialogue-two .project-dialogue-mes {
+    background-color: #e1f4ff;
+    color: #000;
+}
+.project-market .project-dialogue .project-dialogue-two .project-dialogue-mes::after{
+    border-right:15px solid #e1f4ff; 
+}
+.project-market .project-dialogue .project-dialogue-operation {
+    color: #7e7e7e;
+}
+.project-market .project-dialogue .project-dialogue-operation span {
+    cursor: pointer;
+}
+.project-market .project-dialogue .reply{
+    margin: 0px 15px 0px 5px;
+}
+.project-market .project-dialogue .project-dialogue-one {
+    overflow: hidden;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #ccc;
+}
+.project-market .project-dialogue ul {
+    overflow: hidden;
+}
+.project-market .project-dialogue-from {
+    margin-bottom: 12px;
+    position: relative;
+}
+.project-market .project-dialogue-from .text{
+    line-height: 34px;
+    width: 235px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-indent: 10px;
+    margin-right: 2px;
+}
+.project-market .project-dialogue > .project-dialogue-from:after,
+.project-market .project-dialogue > .project-dialogue-from:before{
+    display: none;
+}
+/* 上三角 */
+.project-market .project-dialogue-from:after,
+.project-market .project-dialogue-from:before {
+    content: '';
+    width:0; 
+    height:0; 
+    border-width:0 5px 8px 5px; 
+    border-style:solid; 
+    border-color:transparent transparent #ccc; 
+    position: absolute;
+    left: 10px;
+    top: -7px;
+}
+.project-market .project-dialogue-from::before {
+    border-color:transparent transparent #fff; 
+    top: -6px;
+    z-index: 97;
+}

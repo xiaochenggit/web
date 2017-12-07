@@ -64,7 +64,7 @@ export default class LoadModel extends Component {
     let offsetHeight = modelBox.offsetHeight;
     let scrollTop = modelBox.scrollTop;
     let scrollHeight = modelBox.scrollHeight;
-    if (offsetHeight + scrollTop == scrollHeight && arr.length < propsArr.length) {
+    if (offsetHeight + scrollTop === scrollHeight && arr.length < propsArr.length) {
       that.setState({
         index: index ++,
         arr: propsArr.slice(0, (index + 1) * pageNum),

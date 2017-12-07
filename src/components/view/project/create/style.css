@@ -1,0 +1,15 @@
+/* 发布项目 releaseproject*/
+.project-release {
+    padding: 1rem;
+    background-color: #fff;
+    margin: 1rem 0;
+    border-radius: 0.2rem;
+}
+.editor-box {
+    position: relative;
+    margin-bottom: 10px;
+}
+.project-release .small {
+    width: 25%;
+    display: inline-block;
+}

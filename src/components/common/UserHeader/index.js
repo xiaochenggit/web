@@ -48,6 +48,8 @@ class UserHeader extends Component {
     PubSub.publish('changeUser', user);
     PubSub.publish('changeUserOpinion', user);
     PubSub.publish('changeUserArticle', user);
+    PubSub.publish('changeUserProject', user);
+    PubSub.publish('changeUserProjectDetail', user);
   }
   componentDidMount() {
     this.chekLogin();
@@ -103,6 +105,9 @@ class UserHeader extends Component {
         </Menu.Item>
         <Menu.Item>
           <Link to={'/article/create'}>发布文章</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <Link to={'/project/create'}>创建项目</Link>
         </Menu.Item>
         {
           user.role > 0 ? 

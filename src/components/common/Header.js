@@ -33,8 +33,8 @@ class Header extends Component {
               <Menu.Item key="/">
               <Link to="/"><Icon type="mail" />首页</Link>
               </Menu.Item>
-              <Menu.Item key="app" disabled>
-                <Icon type="appstore" />Navigation Two
+              <Menu.Item key="/project/list">
+                <Link to="/project/list">项目列表</Link>
               </Menu.Item>
               <SubMenu title={<span><Icon type="setting" />Navigation Three - Submenu</span>}>
                 <MenuItemGroup title="Item 1">
@@ -47,7 +47,7 @@ class Header extends Component {
                 </MenuItemGroup>
               </SubMenu>
               <Menu.Item key="/list">
-                <Link to="/list">列表页面</Link>
+                <Link to="/list">文章列表</Link>
               </Menu.Item>
               <Menu.Item key="/opinion">
                 <Link to="/opinion">意见反馈</Link>

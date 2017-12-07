@@ -13,6 +13,9 @@ import ArticleCategoryCreate from './components/view/articleCategory/create';
 import ArticleCreate from './components/view/article/create';
 import Article from './components/view/article';
 import Opinion from './components/view/opinion';
+import ProjectCreate from './components/view/project/create';
+import ProjectList from './components/view/project/list';
+import Project from './components/view/project/';
 class App extends Component {
   render() {
     return (
@@ -29,6 +32,9 @@ class App extends Component {
             <Route exact path="/article/create" component={ArticleCreate}/>
             <Route exact path="/article/detail/:articleId" component={Article} />
             <Route exact path="/opinion" component={Opinion} />
+            <Route exact path="/project/create" component={ProjectCreate} />
+             <Route exact path="/project/list" component={ProjectList} />
+            <Route exact path="/project/detail/:projectId" component={Project} />
             </div>
             <FooterHTML />
           </div>
