@@ -20,6 +20,12 @@
     background-color: #fff;
     padding: 16px;
 }
+.project-list-box .project-des .project-botton-group {
+    margin-top: 14px;
+}
+.project-list-box .project-des .project-botton-group .ant-btn-primary {
+    margin-right: 1rem;
+}
 .project-list-box .avator {
     width: 44px;
     height: 44px;

@@ -1,5 +1,6 @@
 import React , { Component } from 'react';
 import $ from 'jquery';
+import { Button, Tooltip } from 'antd';
 import './style.css';
 
 require('moment/locale/zh-cn');
@@ -68,6 +69,20 @@ class ProjectList extends Component {
 						<div className="project-oper">
 							<p className="fl overtime">截止日期：<span>{ moment(item.time).format('YYYY.MM.DD') }</span></p>
 							<span className="btn btn-primary btn-xs fr">{ item.schedule }</span>
+						</div>
+						<div className='project-botton-group'>
+							{
+								item.endUser ? 
+								<Tooltip title={item.endUser.userName}>
+									<Button type="primary">已结单</Button>
+								</Tooltip>
+								: ''
+							}
+							{
+								item.isOverdue ? 
+								<Button type="danger">已过期</Button>
+								: ''
+							}
 						</div>
 					</div>
 				</div>

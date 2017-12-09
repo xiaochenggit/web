@@ -84,6 +84,17 @@ let userSchema = new Schema({
             type: Number,
             default: new Date().getTime()
         }
+    }],
+    // 承接的项目
+    holdProjects: [{
+        project: {
+            type : ObjectId,
+            ref : 'Project'
+        },
+        time: {
+            type: Number,
+            default: new Date().getTime()
+        }
     }]
 });
 

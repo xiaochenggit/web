@@ -1,6 +1,6 @@
 import React , { Component } from 'react';
 import $ from 'jquery';
-import { message } from 'antd';
+import { message, Tooltip , Button } from 'antd';
 import PubSub from 'pubsub-js';
 import ProjectComment from './projectComment';
 import './style.css';
@@ -60,20 +60,31 @@ class Project extends Component {
 	/**
 	 * 项目收藏
 	 * @param  {String} _id [项目id]
+	 * @param {String} cancel 取消
 	 */
-	projectCare = (_id) => {
+	projectCare = (_id,cancel) => {
 		$.ajax({
 			url: '/api/project/care',
 			type: 'POST',
-			data: { _id },
+			data: { _id, cancel },
 			success: (data) => {
 				if (data.status === 200) {
-					console.log('收藏项目成功!')
+					this.getProjectDetail();
 				} else {
 					message.error(data.msg);
 				}
 			}
 		})
+	}
+	isCareProject = (careUsers,userId) => {
+		let isCare = false;
+		careUsers.forEach((item, index) => {
+			if (item.user === userId) {
+				isCare = true;
+				return;
+			}
+		})
+		return isCare;
 	}
 	/**
 	 * 项目操作按钮切换状态
@@ -82,6 +93,12 @@ class Project extends Component {
 		this.setState({
 			isOper: !this.state.isOper
 		})
+	}
+	/**
+	 * 
+	 */
+	setEndUser = () => {
+		this.getProjectDetail();
 	}
 	componentWillUnmount () {
     PubSub.unsubscribe('changeUserProjectDetail');
@@ -106,13 +123,30 @@ class Project extends Component {
 				<p className="time">Time: { moment(project.createTime).format('YYYY.MM.DD') }</p>
 			</div>
 			<div className="project-operation">
-				<div className="btn btn-primary" id="project-oper-btn" onClick={() => this.oper()}>操作 &or;</div>
-				<div className={"project-oper" + (isOper ? " on" : "")} id="project-oper">
-					<ul>
-						<li onClick={() => this.projectCare(project._id)}>收藏</li>
-						<li>下载附件</li>
-					</ul>
-				</div>
+				{
+					user._id === project.user._id ?
+					<div className="btn btn-primary">修改</div>
+					:
+					isOper ? 
+					<div className="btn btn-primary" onClick={() => this.oper()}>操作 &and;</div>
+					:
+					<div className="btn btn-primary" onClick={() => this.oper()}>操作 &or;</div>
+				}
+				
+				{
+					isOper && user._id !== project.user._id ? 
+					<div className="project-oper" id="project-oper">
+						<ul>
+							{
+								this.isCareProject(project.careUsers, user._id) ? 
+								<li onClick={() => this.projectCare(project._id, 'cancel')}>已收藏</li>
+								: 
+								<li onClick={() => this.projectCare(project._id)}>收藏</li>
+							}
+							<li>下载附件</li>
+						</ul>
+					</div>: ''
+				}
 			</div>
 		</div>
 		<div className="project-theme">
@@ -130,12 +164,27 @@ class Project extends Component {
 				<dt>联系方式：</dt>
 				<dd>{ project.concat }</dd>
 			</dl>
+			<dl>
+				{
+					project.endUser ? 
+					<Tooltip title={project.endUser.userName}>
+						<Button type="primary">已结单</Button>
+					</Tooltip>
+					: ''
+				}
+				{
+					project.isOverdue ? 
+					<Button type="danger">已过期</Button>
+					: ''
+				}
+			</dl>
 		</div>
 		<div className="project-intr">{ project.content }</div>
 		<ProjectComment 
 			user={user}
 			projectId={project._id}
 			project={project}
+			setEndUser={this.setEndUser}
 		/>
 		</div>:
 		<div className="project-market">正在加载</div>

@@ -14,6 +14,7 @@ const ObjectId = Schema.Types.ObjectId;
  * endUser 结单人
  * updateTime 更新时间
  * createTime 创建时间
+ * isOverdue 是否过期
  */
 let projectSchema = new Schema({
     name: {
@@ -38,6 +39,10 @@ let projectSchema = new Schema({
 	user: {
 		type : ObjectId,
 		ref : 'User'
+    },
+    isOverdue: {
+        type: Boolean,
+        default: false
     },
     careUsers: [{
         user: {

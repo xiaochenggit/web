@@ -51,13 +51,6 @@
     right: 0px;
     top: 40px;
 }
-.project-market-top .project-operation .project-oper{
-    display: none;
-    transition: all 0.5s;
-}
-.project-market-top .project-operation .project-oper.on{
-    display: block;
-}
 .project-market-top .project-operation .project-oper li {
     cursor: pointer;
     width: 100%;
@@ -78,6 +71,9 @@
     line-height: 24px;
     margin-bottom: 14px;
     overflow: hidden;
+}
+.project-market .project-des dl .ant-btn-primary {
+    margin-right: 1rem;
 }
 .project-market .project-des dt {
     color: #8a8a8a;
@@ -163,9 +159,7 @@
 }
 .project-market .project-dialogue .project-dialogue-operation span {
     cursor: pointer;
-}
-.project-market .project-dialogue .reply{
-    margin: 0px 15px 0px 5px;
+    margin: 0px 10px 0px 10px;
 }
 .project-market .project-dialogue .project-dialogue-one {
     overflow: hidden;

@@ -8,6 +8,8 @@ const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const Option = Select.Option;
 const { TextArea } = Input;
+require('moment/locale/zh-cn');
+let moment = require('moment');
 
 class ProjectCreate extends Component {
 	constructor () {
@@ -18,9 +20,15 @@ class ProjectCreate extends Component {
 	}
 	handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields((err, fieldsValue) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        // Should format date value before submit.
+	      const rangeValue = fieldsValue['range-picker'];
+	      const rangeTimeValue = fieldsValue['range-time-picker'];
+	      const values = {
+	        ...fieldsValue,
+	        'time': fieldsValue['time'].format('YYYY-MM-DD')
+	      };
         $.ajax({
           url: '/api/project/create',
           type: 'POST',
@@ -37,6 +45,13 @@ class ProjectCreate extends Component {
         })
       }
     });
+  }
+  disabledEndDate = (endValue) => {
+    const startValue = new Date();
+    if (!endValue || !startValue) {
+      return false;
+    }
+    return endValue.valueOf() <= startValue.valueOf();
   }
 	componentWillMount () {
 		// 监控 用户的登录状态!
@@ -112,6 +127,10 @@ class ProjectCreate extends Component {
 			            <Select placeholder="请选择项目类型">
 			              <Option value="xcx">小程序</Option>
 			              <Option value="h5">H5</Option>
+			              <Option value="qd">前端</Option>
+			              <Option value="android">Android</Option>
+			              <Option value="app">APP</Option>
+			              <Option value="pho">PHP</Option>
 			            </Select>
 			          )}
 	            </FormItem>
@@ -147,15 +166,17 @@ class ProjectCreate extends Component {
 	                <Input placeholder='项目进度'/>
 	              )}
 	            </FormItem>
-	            {/*<FormItem
+	            <FormItem
 		            className='small'
 			          {...formItemLayoutSmall}
 			          label="交付日期"
 			        >
 			          {getFieldDecorator('time', config)(
-			            <DatePicker />
+			            <DatePicker
+			            	disabledDate={this.disabledEndDate}
+			            />
 			          )}
-			        </FormItem>*/}
+			        </FormItem>
 	            <FormItem
 	              {...formItemLayout}
 	              label="联系方式:"
