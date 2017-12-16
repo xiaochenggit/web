@@ -30,8 +30,8 @@ let projectSchema = new Schema({
     	type: String
     },
     time: {
-    	type: Date,
-    	default: new Date()
+    	type: Number,
+    	default: new Date().getTime()
     },
     concat: {
     	type: String

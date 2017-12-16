@@ -68,7 +68,7 @@ class ProjectList extends Component {
 						<div className="project-content">{ item.content }</div>
 						<div className="project-oper">
 							<p className="fl overtime">截止日期：<span>{ moment(item.time).format('YYYY.MM.DD') }</span></p>
-							<span className="btn btn-primary btn-xs fr">{ item.schedule }</span>
+							<span className="btn btn-primary btn-xs fr">{ item.type }</span>
 						</div>
 						<div className='project-botton-group'>
 							{
