@@ -1,5 +1,6 @@
 import React , { Component } from 'react';
 import $ from 'jquery';
+import { Link } from 'react-router-dom';
 import { Button, Tooltip } from 'antd';
 import './style.css';
 
@@ -87,7 +88,7 @@ class ProjectList extends Component {
 					</div>
 				</div>
 			)
-		: '暂无项目'
+		: <div>暂无项目,你可以<Link to={'/project/create'}>添加项目</Link></div>
 		return (
 				<div className='public'>
 					<div className="project-list public">

@@ -186,31 +186,13 @@ class ProjectComment extends Component {
 			comments
 		})
 	}
-	/**
-	 * 设置项目承接人 成功之后回调
-	 * @param  {Number} projectId 项目id
-	 * @param  {Number} userId    用户id
-	 */
-	setEndUser = (projectId, userId) => {
-		$.ajax({
-			url: '/api/project/setenduser',
-			type: 'POST',
-			data: { projectId, userId },
-			success: (data) => {
-				if (data.status === 200) {
-					this.props.setEndUser();
-				} else {
-					message.error(data.msg);
-				}
-			}
-		})
-	}
+	
 	componentWillUnmount () {
     $(window).unbind('scroll');
   }
 	render () {
 		let { domain, comments } = this.state;
-		let { project, user} = this.props;
+		let { project, user, setEndUser} = this.props;
 		return (
 			<div className="project-dialogue">
 				<ul>
@@ -238,7 +220,7 @@ class ProjectComment extends Component {
 										}
 										{
 											user._id === project.user._id && !project.endUser && item.from._id !== project.user._id  ? 
-											<span onClick={() => this.setEndUser(project._id, item.from._id)}>设置成项目承接人</span> : ''
+											<span onClick={() => setEndUser(project._id, item.from._id)}>设置成项目承接人</span> : ''
 										}
 									</div>
 									<ul>

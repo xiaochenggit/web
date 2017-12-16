@@ -15,20 +15,25 @@ class ProjectCreate extends Component {
 	constructor () {
 		super();
 		this.state = {
-			user: {}
+			user: {},
+			project: {}
 		}
 	}
+
 	handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, fieldsValue) => {
       if (!err) {
+      	let { project } = this.state;
         // Should format date value before submit.
 	      const rangeValue = fieldsValue['range-picker'];
 	      const rangeTimeValue = fieldsValue['range-time-picker'];
 	      const values = {
 	        ...fieldsValue,
-	        'time': fieldsValue['time'].format('YYYY-MM-DD')
+	        'time': fieldsValue['time'].format('YYYY-MM-DD'),
+	        projectId: project._id
 	      };
+
         $.ajax({
           url: '/api/project/create',
           type: 'POST',
@@ -46,6 +51,7 @@ class ProjectCreate extends Component {
       }
     });
   }
+  // 判断过去的日期不可选择
   disabledEndDate = (endValue) => {
     const startValue = new Date();
     if (!endValue || !startValue) {
@@ -61,6 +67,26 @@ class ProjectCreate extends Component {
       })
     });
     PubSub.publish('getUser');
+    this.getProjectDetail(this.props.location.search);
+	}
+	componentWillReceiveProps(nextProps) {
+    this.getProjectDetail(nextProps.location.search);
+  }
+	/**
+	 * 获得项目的详细信息
+	 */
+	getProjectDetail = (search) => {
+    $.ajax({
+      url: '/api/project/detail' + search,
+      type: 'GET',
+      success: (data) => {
+        if (data.status === 200) {
+          this.setState({
+            project: data.result.project
+          })
+        }
+      }
+    })
 	}
 	login = () => {
 		PubSub.publish('userLogin');
@@ -69,6 +95,7 @@ class ProjectCreate extends Component {
     PubSub.unsubscribe('changeUserProject');
   }
 	render () {
+		let { user, project } = this.state;
 		const { getFieldDecorator } = this.props.form;
     const formItemLayoutSmall = {
       labelCol: {
@@ -92,8 +119,9 @@ class ProjectCreate extends Component {
     };
     const config = {
       rules: [{ type: 'object', required: true, message: '请选择交付日期' }],
+      initialValue: moment(moment(project.time).format('YYYY-MM-DD') || moment(new Date()).format('YYYY-MM-DD'), 'YYYY-MM-DD')
     };
-    let { user } = this.state;
+    
 		return (
 			<div className='project public'>
 				<div className="project-release">
@@ -109,8 +137,12 @@ class ProjectCreate extends Component {
 	                rules: [{
 	                  required: true, message: '请填写项目名称!',
 	                }],
+	                initialValue: project.name
 	              })(
-	                <Input placeholder="请填写项目名称"/>
+	                <Input 
+	                	placeholder="请填写项目名称"
+	                	disabled={project.isOverdue}
+	                />
 	              )}
 	            </FormItem>
 	            <FormItem
@@ -123,8 +155,9 @@ class ProjectCreate extends Component {
 			            rules: [
 			              { required: true, message: '请选择项目类型' },
 			            ],
+			            initialValue: project.type || ''
 			          })(
-			            <Select placeholder="请选择项目类型">
+			            <Select placeholder="请选择项目类型" disabled={project.isOverdue}>
 			              <Option value="xcx">小程序</Option>
 			              <Option value="h5">H5</Option>
 			              <Option value="qd">前端</Option>
@@ -143,12 +176,13 @@ class ProjectCreate extends Component {
 	                rules: [{
 	                  required: true, message: '请填写项目预算!',
 	                }],
-	                initialValue: 1000
+	                initialValue: project.budget || 1000
 	              })(
 	                <InputNumber
 							      formatter={value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
 							      parser={value => value.replace(/\￥\s?|(,*)/g, '')}
 							      step={50}
+							      disabled={project.isOverdue}
 							    />
 	              )}
 	            </FormItem>
@@ -162,8 +196,9 @@ class ProjectCreate extends Component {
 	                rules: [{
 	                  required: true, message: '请填写项目进度!',
 	                }],
+	                initialValue: project.schedule
 	              })(
-	                <Input placeholder='项目进度'/>
+	                <Input placeholder='项目进度' disabled={project.isOverdue}/>
 	              )}
 	            </FormItem>
 	            <FormItem
@@ -174,6 +209,7 @@ class ProjectCreate extends Component {
 			          {getFieldDecorator('time', config)(
 			            <DatePicker
 			            	disabledDate={this.disabledEndDate}
+			            	disabled={project.isOverdue}
 			            />
 			          )}
 			        </FormItem>
@@ -186,8 +222,9 @@ class ProjectCreate extends Component {
 	                rules: [{
 	                  required: true, message: '请填写联系方式',
 	                }],
+	                initialValue: project.concat
 	              })(
-	                <Input placeholder='手机/QQ/微信'/>
+	                <Input placeholder='手机/QQ/微信' disabled={project.isOverdue}/>
 	              )}
 	            </FormItem>
 	            <FormItem
@@ -199,25 +236,18 @@ class ProjectCreate extends Component {
 	                rules: [{
 	                  required: true, message: '请填写项目描述',
 	                }],
+	                initialValue: project.content
 	              })(
-	                <TextArea rows={4} placeholder="请项目描述"/>
+	                <TextArea rows={4} placeholder="请项目描述" disabled={project.isOverdue}/>
 	              )}
 	            </FormItem>
-	          	{/*
-		          <div className="ant-row ant-form-item">
-		          	<div className="ant-form-item-label ant-col-xs-2 ant-col-sm-2">
-		          		<label className="ant-form-item-required" title="联系方式:">项目描述</label>
-		          	</div>
-		          	<div className="ant-form-item-control-wrapper ant-col-xs-20 ant-col-sm-20">
-			          	<div className="ant-form-item-control ">
-			          		<div ref="editorElem"></div>
-			          	</div>
-		          	</div>
-		          </div>*/}
 		          <FormItem wrapperCol={{ span: 2, offset: 2 }}>
 		            	{
 		            		user._id ? 
-		              	<Button type="primary" htmlType="submit">创建</Button>
+			            		project._id ?
+			            		<Button type="primary" htmlType="submit" disabled={project.isOverdue}>确认修改</Button>
+			            		:
+			              	<Button type="primary" htmlType="submit">创建</Button>
 		              	:
 		              	<Button type="primary" onClick={this.login}>请先登录</Button>
 		            	}

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 let Project = require('../models/project');
 let User = require('../models/user');
+let ProjectComment = require('../models/projectComment');
 
 // 项目类型要与前端对应
 const TYPE = {
@@ -14,12 +15,13 @@ const TYPE = {
 }
 router.post('/create', (req, res, next) => {
 	let data = req.body;
+	let projectId = data.projectId;
 	let cookieUser = req.session.user;
+	data.user = cookieUser._id;
+	data.type = TYPE[data.type]; // 添加对应的类型
+	data.time = new Date(data.time).getTime()
 	if (cookieUser) {
-		if (!data._id) { // 判断是否是修改
-			data.user = cookieUser._id;
-			data.type = TYPE[data.type]; // 添加对应的类型
-			data.time = new Date(data.time).getTime()
+		if (!projectId) { // 判断是否是修改
 			let newProject = new Project(data);
 			newProject.save((err, project) => {
 				// 项目人添加项目到 createProjects
@@ -39,6 +41,38 @@ router.post('/create', (req, res, next) => {
 						project
 					}
 				})
+			})
+		} else {
+			// 修改
+			Project.findOne({_id: projectId}, (err, project)=> {
+				if (err) {
+					res.json({status: 401, msg: err.message});
+				} else {
+					if (project) {
+						// 判断是否有权限修改
+						if (project.user == cookieUser._id) {
+							if (project.time > new Date().getTime()) {
+								Project.update({_id: projectId}, data, function() {
+									res.json({
+										status: 200,
+										msg: '修改项目成功',
+										result: {
+											project: {
+												_id: projectId
+											}
+										}
+									})
+								})
+							} else {
+								res.json({status: 204, msg: '该项目已经过期不能修改'});
+							}
+						} else {
+							res.json({status: 202, msg: '你没有权限修改该项目!'})
+						}
+					} else {
+						res.json({status: 201, msg: '没有找到该项目'});
+					}
+				}
 			})
 		}
 	} else {
@@ -69,9 +103,9 @@ router.get('/list', (req, res, next) => {
 })
 
 // 获得项目详情
-router.post('/detail', (req, res, next) => {
-	let { _id } = req.body;
-	Project.findOne({_id})
+router.get('/detail', (req, res, next) => {
+	let { projectId } = req.query;
+	Project.findOne({_id: projectId})
 	.populate({path: "user", select: 'sex userName avatar role'})
 	.populate({path: "endUser", select: 'sex userName avatar role'})
 	.exec((err, project) => {
@@ -85,7 +119,7 @@ router.post('/detail', (req, res, next) => {
 				}
 				res.json({ 
 					status: 200, 
-					msg: '获取项目列表成功',
+					msg: '获取项目信息成功',
 					result: {
 						project
 					}
@@ -166,8 +200,9 @@ router.post("/setenduser", (req, res, next) => {
 	/**
 	 * projectId 项目id
 	 * userId 用户id
+	 * cancel 有值得时候代表取消接单人
 	 */
-	let { projectId, userId } = req.body;
+	let { projectId, userId, cancel } = req.body;
 	let cookieUser = req.session.user;
 	Project.findOne({_id: projectId}, (err, project) => {
 		if (err) {
@@ -179,19 +214,35 @@ router.post("/setenduser", (req, res, next) => {
 					res.json({status: 203, msg: '项目已经过期了!'});
 				} else {
 					if (project.user == cookieUser._id) { // 判断权限
-						if (project.endUser) { // 判断有没有人接
-							res.json({ status: 201, msg: '该项目已经有人接啦'})
+						if (!cancel) {
+							if (project.endUser) { // 判断有没有人接
+								res.json({ status: 201, msg: '该项目已经有人接啦'})
+							} else {
+								// 用户承接项目添加
+								User.findOne({_id: userId}, (err, user) => {
+									user.holdProjects.unshift({
+										project: projectId,
+										time: new Date().getTime()
+									});
+									user.save();
+									project.endUser = userId;
+									project.save(()=> {
+										res.json({ status: 200, msg: '设置项目承接人成功!'});
+									})
+								})
+							}
 						} else {
-							// 用户承接项目添加
+							// 取消承接人
 							User.findOne({_id: userId}, (err, user) => {
-								user.holdProjects.unshift({
-									project: projectId,
-									time: new Date().getTime()
-								});
+								user.holdProjects.forEach((item,index) => {
+									if (item.project == projectId) {
+										user.holdProjects.splice(index, 1);
+										return;
+									}
+								})
 								user.save();
-								project.endUser = userId;
-								project.save(()=> {
-									res.json({ status: 200, msg: '设置项目承接人成功!'});
+								Project.update({_id: projectId},{$unset:{endUser:''}}, false, function () {
+									res.json({ status: 200, msg: '删除项目承接人成功!'});
 								})
 							})
 						}
@@ -206,4 +257,44 @@ router.post("/setenduser", (req, res, next) => {
 	})
 });
 
+// 删除项目
+router.post('/delete', (req, res, next) => {
+	let { projectId } = req.body;
+	let cookieUser = req.session.user;
+	if (cookieUser) {
+		Project.findById(projectId, (err, project) => {
+			if (err) {
+				res.json({status: 401, msg: err.message});
+			} else {
+				if (project) {
+					// 判断权限
+					if (cookieUser.role >= 10 || cookieUser._id == project.user) {
+						// 把和项目相关的一些删除
+						User.update({},{'$pull': {careProjects: {project : projectId }}}, { multi: true }, () => {
+							User.update({},{'$pull': {createProjects: {project : projectId }}}, { multi: true }, () => {
+								User.update({},{'$pull': {holdProjects: {project : projectId }}}, { multi: true }, () => {
+									ProjectComment.remove({project: projectId},()=> {
+										Project.remove({_id: projectId}, (err) => {
+											if (err) {
+												res.json({status: 401, msg: err.message});
+											} else {
+												res.json({ status: 200, msg: '删除项目成功!'});
+											}
+										})
+									});
+								})
+							})
+						})
+					} else {
+						res.json({status: 202, msg: '你没有权限删除此项目!'})
+					}
+				} else {
+					res.json({status: 201, msg: '项目已经删除了!'})
+				}
+			}
+		})
+	} else {
+		res.json({status: 201, msg: '请先登录'})
+	}
+})
 module.exports = router;
