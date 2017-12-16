@@ -1,12 +1,14 @@
 import React , { Component } from 'react';
 import $ from 'jquery';
-import { message, Tooltip , Button } from 'antd';
+import { Link } from 'react-router-dom';
+import { message, Tooltip , Button , Modal} from 'antd';
 import PubSub from 'pubsub-js';
 import ProjectComment from './projectComment';
 import './style.css';
 
 require('moment/locale/zh-cn');
 let moment = require('moment');
+const confirm = Modal.confirm;
 
 class Project extends Component {
 	constructor (props) {
@@ -41,11 +43,8 @@ class Project extends Component {
 	getProjectDetail = () => {
 		let { projectId } = this.state;
     $.ajax({
-      url: '/api/project/detail',
-      type: 'POST',
-      data: {
-        _id: projectId
-      },
+      url: '/api/project/detail?projectId=' + projectId,
+      type: 'GET',
       success: (data) => {
         if (data.status === 200) {
           this.setState({
@@ -76,6 +75,12 @@ class Project extends Component {
 			}
 		})
 	}
+	/**
+	 * 判断用户是否收藏了该项目
+	 * @param  {Array} careUsers  收藏数组
+	 * @param  {Number} userId    用户ID
+	 * @return {Boolean}   				false 为没有收藏 true收藏
+	 */
 	isCareProject = (careUsers,userId) => {
 		let isCare = false;
 		careUsers.forEach((item, index) => {
@@ -95,10 +100,61 @@ class Project extends Component {
 		})
 	}
 	/**
-	 * 
+	 * 设置项目承接人 成功之后回调
+	 * @param  {Number} projectId 项目id
+	 * @param  {Number} userId    用户id
+	 * @param {String} cancel 是否取消，有值的时候代表取消
 	 */
-	setEndUser = () => {
-		this.getProjectDetail();
+	setEndUser = (projectId, userId, cancel) => {
+		$.ajax({
+			url: '/api/project/setenduser',
+			type: 'POST',
+			data: { projectId, userId , cancel},
+			success: (data) => {
+				if (data.status === 200) {
+					this.getProjectDetail();
+				} else {
+					message.error(data.msg);
+				}
+			}
+		})
+	}
+	/**
+	 * 删除结单人确认选择框
+	 */
+	showConfirm = (projectId, userId, cancel) => {
+		let { user, project } = this.state;
+		if (project.user._id != user._id) {
+			return;
+		}
+		let that = this;
+	  confirm({
+	    title: '你确定要删除该接单人吗?',
+	    content: '删除后不可恢复！',
+	    onOk() {
+	      that.setEndUser(projectId, userId, cancel)
+	    },
+	    onCancel() {},
+	  });
+	}
+	/**
+	 * 删除项目
+	 * @param  {Number} projectId 项目id
+	 * 成功之后跳转到,列表页面
+	 */
+	deleteProject = (projectId) => {
+		$.ajax({
+			url: '/api/project/delete',
+			type: 'POST',
+			data: { projectId },
+			success: (data) => {
+				if (data.status) {
+					this.props.history.push('/project/list');
+				} else {
+					message.error(data.msg);
+				}
+			}
+		})
 	}
 	componentWillUnmount () {
     PubSub.unsubscribe('changeUserProjectDetail');
@@ -124,9 +180,6 @@ class Project extends Component {
 			</div>
 			<div className="project-operation">
 				{
-					user._id === project.user._id ?
-					<div className="btn btn-primary">修改</div>
-					:
 					isOper ? 
 					<div className="btn btn-primary" onClick={() => this.oper()}>操作 &and;</div>
 					:
@@ -134,17 +187,33 @@ class Project extends Component {
 				}
 				
 				{
-					isOper && user._id !== project.user._id ? 
+					isOper ? 
 					<div className="project-oper" id="project-oper">
-						<ul>
-							{
-								this.isCareProject(project.careUsers, user._id) ? 
-								<li onClick={() => this.projectCare(project._id, 'cancel')}>已收藏</li>
-								: 
-								<li onClick={() => this.projectCare(project._id)}>收藏</li>
-							}
-							<li>下载附件</li>
-						</ul>
+						{
+							user._id == project.user._id ?
+							<ul>
+								{
+									project.isOverdue ? "": 
+									<li>
+										<Link
+											to={'/project/create?projectId=' + project._id }>
+											修改
+										</Link>
+									</li>
+								}
+								<li onClick={() => this.deleteProject(project._id)}>删除</li>
+							</ul>
+							: 
+							<ul>
+								{
+									this.isCareProject(project.careUsers, user._id) ? 
+									<li onClick={() => this.projectCare(project._id, 'cancel')}>已收藏</li>
+									: 
+									<li onClick={() => this.projectCare(project._id)}>收藏</li>
+								}
+								<li>下载附件</li>
+							</ul>
+						}
 					</div>: ''
 				}
 			</div>
@@ -168,7 +237,7 @@ class Project extends Component {
 				{
 					project.endUser ? 
 					<Tooltip title={project.endUser.userName}>
-						<Button type="primary">已结单</Button>
+						<Button type="primary" onClick={() => this.showConfirm(project._id,project.endUser._id,'cancel')}>已结单</Button>
 					</Tooltip>
 					: ''
 				}
