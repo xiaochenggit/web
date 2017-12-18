@@ -176,12 +176,15 @@ router.post('/detail', (req, res, next) => {
 					let cookieUser = req.session.user;
 					if (cookieUser) { // 判断是否浏览过
 						article.browses.forEach((item, index) => {
-								if (item.user._id == cookieUser._id) {
-									article.browses.splice(index, 1);
-									return;
-								}
+							if (item.user._id == cookieUser._id) {
+								article.browses.splice(index, 1);
+								return;
+							}
 						})
-						article.browses.unshift({ user: cookieUser._id, time: new Date().getTime() });
+						article.browses.unshift({
+							user: cookieUser._id,
+							time: new Date().getTime()
+						});
 						article.save((err, article) => {
 							article.populate({ 
 								path: 'browses.user',

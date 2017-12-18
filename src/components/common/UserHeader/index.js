@@ -2,6 +2,7 @@ import React , { Component } from 'react';
 import PubSub from 'pubsub-js';
 import { Link } from 'react-router-dom';
 import Login from './Login';
+import $ from 'jquery';
 import { Menu, Dropdown, Icon, Modal, Tabs, Avatar} from 'antd';
 import Register from './Register';
 
@@ -63,16 +64,17 @@ class UserHeader extends Component {
   }
   // 验证是否登录
   chekLogin = () => {
-    fetch('/api/users/cheklogin',{
-      method: 'GET',
-      credentials: "include"
-    }).then(res => res.json()).then(data => {
-      if (data.status === 200) {
-        this.loginSuccess(data.result);
-      } else {
-        this.changeUser({});
+    $.ajax({
+      url: '/api/users/cheklogin',
+      type: 'GET',
+      success: (data) => {
+        if (data.status === 200) {
+          this.loginSuccess(data.result);
+        } else {
+          this.changeUser({});
+        }
       }
-    })
+    });
   }
   // 登出
   logOut = () => {

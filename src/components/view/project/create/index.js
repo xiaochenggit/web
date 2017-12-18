@@ -22,33 +22,35 @@ class ProjectCreate extends Component {
 
 	handleSubmit = (e) => {
     e.preventDefault();
+    console.log("1")
     this.props.form.validateFields((err, fieldsValue) => {
-      if (!err) {
-      	let { project } = this.state;
-        // Should format date value before submit.
-	      const rangeValue = fieldsValue['range-picker'];
-	      const rangeTimeValue = fieldsValue['range-time-picker'];
-	      const values = {
-	        ...fieldsValue,
-	        'time': fieldsValue['time'].format('YYYY-MM-DD'),
-	        projectId: project._id
-	      };
+    	if (err) {
+    		return;
+    	}
+    	let { project } = this.state;
+      // Should format date value before submit.
+      const rangeValue = fieldsValue['range-picker'];
+      const rangeTimeValue = fieldsValue['range-time-picker'];
+      const values = {
+        ...fieldsValue,
+        'time': fieldsValue['time'].format('YYYY-MM-DD'),
+        projectId: project._id
+      };
 
-        $.ajax({
-          url: '/api/project/create',
-          type: 'POST',
-          data: {
-            ...values
-          },
-          success: (data) => {
-            if (data.status === 200) {
-              this.props.history.push('/project/detail/' + data.result.project._id);
-            } else {
-              message.error(data.msg);
-            }
+      $.ajax({
+        url: '/api/project/create',
+        type: 'POST',
+        data: {
+          ...values
+        },
+        success: (data) => {
+          if (data.status === 200) {
+            this.props.history.push('/project/detail/' + data.result.project._id);
+          } else {
+            message.error(data.msg);
           }
-        })
-      }
+        }
+      })
     });
   }
   // 判断过去的日期不可选择
@@ -69,9 +71,6 @@ class ProjectCreate extends Component {
     PubSub.publish('getUser');
     this.getProjectDetail(this.props.location.search);
 	}
-	componentWillReceiveProps(nextProps) {
-    this.getProjectDetail(nextProps.location.search);
-  }
 	/**
 	 * 获得项目的详细信息
 	 */
@@ -117,9 +116,13 @@ class ProjectCreate extends Component {
         sm: { span: 10 },
       },
     };
+    // 默认交付日期为明天
+    let date = new Date();
+    date.setDate(date.getDate() + 1);
+    let newDate = project.time ? project.time : date;
     const config = {
       rules: [{ type: 'object', required: true, message: '请选择交付日期' }],
-      initialValue: moment(moment(project.time).format('YYYY-MM-DD') || moment(new Date()).format('YYYY-MM-DD'), 'YYYY-MM-DD')
+      initialValue: moment(moment(newDate).format('YYYY-MM-DD'),'YYYY-MM-DD')
     };
     
 		return (
